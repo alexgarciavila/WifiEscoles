@@ -1,0 +1,28 @@
+{
+  "centers": [
+    {
+      "center_code": "08012345",
+      "center_name": "Institut Example Barcelona",
+      "username": "user@gencat.cat",
+      "password": "password123"
+    },
+    {
+      "center_code": "08023456",
+      "center_name": "Escola Example Girona",
+      "username": "user2@gencat.cat",
+      "password": "password456"
+    },
+    {
+      "center_code": "17034567",
+      "center_name": "Col·legi Test Lleida",
+      "username": "user3@gencat.cat",
+      "password": "password789"
+    },
+    {
+      "center_code": "25045678",
+      "center_name": "Institut Prova Tarragona",
+      "username": "user4@gencat.cat",
+      "password": "password000"
+    }
+  ]
+}

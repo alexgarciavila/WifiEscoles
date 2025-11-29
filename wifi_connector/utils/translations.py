@@ -1,0 +1,198 @@
+"""Módulo de traducciones para el texto de la GUI.
+
+Este módulo contiene todas las cadenas de texto utilizadas en la GUI en catalán.
+"""
+
+# Window title
+WINDOW_TITLE = "Connector WiFi"
+
+# Search section
+SEARCH_LABEL = "Cerca el teu centre:"
+SEARCH_PLACEHOLDER = "Escriu el codi o nom del centre..."
+
+# Centers list
+CENTERS_TITLE = "Centres Educatius"
+CENTER_COUNT = "centres trobats"
+NO_RESULTS = "No s'han trobat resultats"
+
+# Selected center panel
+SELECTED_CENTER_TITLE = "Centre Seleccionat"
+CENTER_CODE_LABEL = "Codi:"
+CENTER_NAME_LABEL = "Nom:"
+USERNAME_LABEL = "Usuari:"
+PASSWORD_LABEL = "Contrasenya:"
+
+# Buttons
+CONNECT_BUTTON = "Connectar"
+DISCONNECT_BUTTON = "Desconnectar"
+OPEN_LOGS_BUTTON = "Obrir Logs"
+
+# Status messages
+STATUS_READY = "Preparat"
+STATUS_CONNECTING = "Connectant..."
+STATUS_CONNECTED = "Connectat"
+STATUS_DISCONNECTED = "Desconnectat"
+STATUS_ERROR = "Error"
+STATUS_SELECT_CENTER = "Selecciona un centre per connectar"
+STATUS_LOADING = "Carregant credencials..."
+STATUS_LOADED = "Carregat {count} centres"
+STATUS_LOADED_SEARCH = "Carregat {count} centres. Utilitza la cerca per trobar el teu centre."
+
+# Connection messages
+MSG_CONNECTING_TO = "Connectant a {network}..."
+MSG_CONNECTION_SUCCESS = "Connexió iniciada correctament"
+MSG_CONNECTION_FAILED = "Error en la connexió: {error}"
+MSG_DISCONNECTION_SUCCESS = "Desconnectat correctament"
+MSG_DISCONNECTION_FAILED = "Error en desconnectar"
+
+# Error messages
+ERROR_NO_CENTER_SELECTED = "Si us plau, selecciona un centre primer"
+ERROR_ALREADY_CONNECTING = "Ja hi ha una connexió en curs"
+ERROR_LOAD_CREDENTIALS = "Error en carregar les credencials: {error}"
+
+# Profile connector messages
+PROFILE_STARTING = "Iniciant connexió per perfil..."
+PROFILE_STEP1 = "Pas 1/5: Instal·lant perfil WiFi..."
+PROFILE_STEP2 = "Pas 2/5: Actualitzant credencials..."
+PROFILE_STEP3 = "Pas 3/5: Configurant credencials EAP..."
+PROFILE_STEP4 = "Pas 4/5: Connectant a la xarxa..."
+PROFILE_STEP5 = "Pas 5/5: Verificant connexió..."
+
+PROFILE_INSTALLING = "Instal·lant perfil WiFi..."
+PROFILE_UPDATING_CREDS = "Actualitzant credencials en XML..."
+PROFILE_CONFIGURING_EAP = "Configurant credencials EAP..."
+PROFILE_CONNECTING = "Connectant a la xarxa..."
+PROFILE_VERIFYING = "Verificant estat de connexió..."
+
+PROFILE_SUCCESS_INSTALLED = "Perfil WiFi instal·lat correctament"
+PROFILE_SUCCESS_EXISTED = "Perfil WiFi ja existia (actualitzat)"
+PROFILE_SUCCESS_UPDATED = "Credencials actualitzades en XML"
+PROFILE_SUCCESS_EAP = "Credencials EAP configurades correctament"
+PROFILE_SUCCESS_CONNECTED = "Connectat exitosament a '{ssid}'"
+PROFILE_SUCCESS_COMMAND = "Comanda de connexió executada per '{ssid}'"
+PROFILE_SUCCESS_VERIFIED = "Connexió verificada: Connectat a '{ssid}'"
+PROFILE_SUCCESS_COMPLETE = "Connexió completada i verificada exitosament"
+
+PROFILE_ERROR_PROFILE_NOT_FOUND = "Arxiu de perfil no trobat: {path}"
+PROFILE_ERROR_NETSH = "Error de netsh: {error}"
+PROFILE_ERROR_INSTALL = "Error en instal·lar perfil: {error}"
+PROFILE_ERROR_CREDS_NOT_FOUND = "Arxiu credentials.xml no trobat: {path}"
+PROFILE_ERROR_PARSING_XML = "Error en parsejar XML: {error}"
+PROFILE_ERROR_UPDATE_CREDS = "Error en actualitzar credentials.xml: {error}"
+PROFILE_ERROR_XML_ELEMENTS = "No s'han trobat elements Username/Password en el XML"
+PROFILE_ERROR_EXE_NOT_FOUND = "Executable WLANSetEAPUserData.exe no trobat: {path}"
+PROFILE_ERROR_EAP = "Error de WLANSetEAPUserData: {error}"
+PROFILE_ERROR_CONFIG_EAP = "Error en configurar credencials EAP: {error}"
+PROFILE_ERROR_CONNECT = "Error en connectar: {error}"
+PROFILE_ERROR_CONNECT_COMMAND = "Error en executar comanda de connexió: {error}"
+PROFILE_ERROR_VERIFY = "Error en verificar connexió: {error}"
+PROFILE_ERROR_NO_VERIFY = "No s'ha pogut verificar la connexió a '{ssid}' després de {attempts} intents. La xarxa pot estar autenticant o les credencials són incorrectes."
+PROFILE_ERROR_AUTH = "Error d'autenticació: Credencials invàlides o xarxa no disponible"
+PROFILE_ERROR_UNEXPECTED = "Error inesperat durant la connexió: {error}"
+
+PROFILE_WARNING_NO_CREDS = "No s'han proporcionat credencials, utilitzant les del XML existent"
+
+PROFILE_LOG_INIT = "ProfileConnector inicialitzat per SSID: {ssid}, Usuari: {username}"
+PROFILE_LOG_STARTING = "=== Iniciant Mètode de Connexió per Perfil ==="
+PROFILE_LOG_VERIFYING = "Verificant connexió a '{ssid}' (màxim {attempts} intents)..."
+PROFILE_LOG_ATTEMPT = "Intent {attempt}/{max_attempts}..."
+PROFILE_LOG_STATE_AUTH = "Estat: Autenticant... (intent {attempt})"
+PROFILE_LOG_STATE_CONNECTING = "Estat: Connectant... (intent {attempt})"
+
+# Credentials Manager messages
+CREDS_LOG_INIT = "CredentialsManager inicialitzat amb ruta: {path}"
+CREDS_LOG_LOADING = "Carregant credencials des de {path}"
+CREDS_LOG_JSON_LOADED = "Arxiu JSON carregat exitosament"
+CREDS_LOG_LOADED_SUCCESS = "Carregat {count} centres exitosament"
+CREDS_LOG_RETURNING_ALL = "Retornant tots els {count} centres"
+CREDS_LOG_SEARCH_CODE = "Cercant centre per codi: {code}"
+CREDS_LOG_FOUND_CENTER = "Centre trobat: {name}"
+CREDS_LOG_CODE_NOT_FOUND = "Centre amb codi '{code}' no trobat"
+CREDS_LOG_SEARCH_NAME = "Cercant centre per nom: {name}"
+CREDS_LOG_NAME_NOT_FOUND = "Centre amb nom '{name}' no trobat"
+CREDS_LOG_SEARCHING = "Cercant centres amb consulta: {query}"
+CREDS_LOG_EMPTY_QUERY = "Consulta buida, retornant tots els centres"
+CREDS_LOG_FOUND_MATCHING = "Trobats {count} centres coincidents"
+CREDS_WARNING_SKIP_ENTRY = "Ometent entrada de centre invàlida: {error}"
+
+CREDS_ERROR_FILE_NOT_FOUND = "Arxiu de credencials no trobat: {path}"
+CREDS_ERROR_INVALID_JSON = "JSON invàlid a {path}: {error}"
+CREDS_ERROR_UNEXPECTED = "Error inesperat carregant credencials: {error}"
+CREDS_ERROR_INVALID_STRUCTURE = "Estructura JSON invàlida a {path}: s'esperava un array"
+CREDS_ERROR_NOT_DICT = "L'entrada de centre ha de ser un diccionari"
+CREDS_ERROR_MISSING_FIELD = "Falta el camp requerit: {field}"
+
+# Network Manager messages
+NET_LOG_INIT = "NetworkManager inicialitzat"
+NET_LOG_SCANNING = "Escanejant xarxes WiFi disponibles"
+NET_LOG_FOUND_NETWORKS = "Trobades {count} xarxes disponibles"
+NET_LOG_NETWORKS_LIST = "Xarxes: {networks}"
+NET_LOG_CHECKING_NETWORK = "Comprovant si la xarxa '{ssid}' està disponible"
+NET_LOG_NETWORK_AVAILABLE = "Xarxa '{ssid}' està disponible"
+NET_LOG_NETWORK_NOT_AVAILABLE = "Xarxa '{ssid}' no està disponible"
+NET_LOG_DISCONNECTING = "Intentant desconnectar de la xarxa WiFi"
+NET_LOG_DISCONNECT_SUCCESS = "Desconnectat exitosament de la xarxa WiFi"
+NET_LOG_EXECUTING_CMD = "Executant comanda: {command}"
+NET_LOG_CMD_FAILED = "Comanda netsh ha fallat amb codi de retorn {code}"
+NET_LOG_CMD_OUTPUT = "Sortida de la comanda: {output}"
+NET_LOG_PARSED_SSIDS = "Parseats {count} SSIDs únics de la sortida"
+
+NET_ERROR_GET_NETWORKS = "Error en obtenir xarxes disponibles: {error}"
+NET_ERROR_DISCONNECT = "Error en desconnectar de la xarxa: {error}"
+
+# Main Window log messages
+MAIN_LOG_INIT = "Inicialitzant MainWindow"
+MAIN_LOG_ICON_SET = "Icona de finestra establerta des de: {path}"
+MAIN_LOG_ICON_NOT_FOUND = "Arxiu d'icona no trobat: {path}"
+MAIN_LOG_ICON_ERROR = "No s'ha pogut establir la icona de la finestra: {error}"
+MAIN_LOG_LOAD_ERROR = "Error en carregar les credencials: {error}"
+MAIN_LOG_INIT_SUCCESS = "MainWindow inicialitzat exitosament"
+MAIN_LOG_STARTING_GUI = "Iniciant bucle principal de la GUI"
+MAIN_LOG_STATUS_UPDATE = "Actualitzant estat: {type} - {message}"
+MAIN_LOG_SETUP_UI = "Configurant components de la interfície"
+MAIN_LOG_UI_COMPLETE = "Configuració de la interfície completada"
+MAIN_LOG_CREATE_SEARCH = "Creant marc de cerca"
+MAIN_LOG_SEARCH_CREATED = "Marc de cerca creat"
+MAIN_LOG_SEARCH_CHANGED = "Consulta de cerca canviada: {query}"
+MAIN_LOG_FILTERING = "Filtrant centres amb consulta: '{query}'"
+MAIN_LOG_FOUND_MATCHING = "Trobats {count} centres coincidents"
+MAIN_LOG_CREATE_TABLE = "Creant taula de centres"
+MAIN_LOG_TABLE_CREATED = "Taula de centres creada"
+MAIN_LOG_POPULATING = "Omplint taula de centres amb {count} centres"
+MAIN_LOG_TABLE_POPULATED = "Taula de centres omplerta"
+MAIN_LOG_CENTER_SELECTED = "Centre seleccionat: {code} - {name}"
+MAIN_LOG_CREATE_CREDS_PANEL = "Creant panell de credencials"
+MAIN_LOG_CREDS_PANEL_CREATED = "Panell de credencials creat"
+MAIN_LOG_USERNAME_COPIED = "Nom d'usuari copiat al porta-retalls"
+MAIN_LOG_PASSWORD_COPIED = "Contrasenya copiada al porta-retalls"
+MAIN_LOG_CREATE_BUTTONS = "Creant botons d'acció"
+MAIN_LOG_BUTTONS_CREATED = "Botons d'acció creats"
+MAIN_LOG_CREATE_STATUS = "Creant barra d'estat"
+MAIN_LOG_STATUS_CREATED = "Barra d'estat creada"
+MAIN_LOG_CONNECT_NO_CENTER = "Connectar clicat però no hi ha centre seleccionat"
+MAIN_LOG_CONNECT_IN_PROGRESS = "Connexió ja en curs"
+MAIN_LOG_CONNECT_CLICKED = "Botó de connectar clicat per al centre: {code}"
+MAIN_LOG_PROFILE_CLICKED = "Botó de Connectar via Perfil clicat"
+MAIN_LOG_PROFILE_NO_CENTER = "Connectar via Perfil clicat però no hi ha centre seleccionat"
+MAIN_LOG_PROFILE_STARTING = "Iniciant connexió basada en perfil per al centre: {code}"
+MAIN_LOG_PROFILE_ERROR = "Error en la connexió via perfil: {error}"
+MAIN_LOG_PROFILE_COMPLETED = "Fil de connexió per perfil completat"
+MAIN_LOG_LOGS_CLICKED = "Botó d'Obrir Logs clicat"
+MAIN_LOG_LOGS_OPENED = "Carpeta de logs oberta: {path}"
+MAIN_LOG_LOGS_ERROR = "Error en obrir la carpeta de logs: {error}"
+MAIN_LOG_DISCONNECT_CLICKED = "Botó de desconnectar clicat"
+MAIN_LOG_DISCONNECT_IN_PROGRESS = "No es pot desconnectar mentre la connexió està en curs"
+MAIN_LOG_DISCONNECT_ERROR = "Error durant la desconnexió: {error}"
+
+# Main.py messages
+APP_STARTING = "Iniciant aplicació WiFi Connector"
+APP_CLOSED = "Aplicació WiFi Connector tancada normalment"
+APP_INTERRUPTED = "Aplicació interrompuda per l'usuari (Ctrl+C)"
+APP_ERROR_START = "Error en iniciar WiFi Connector: {error}"
+APP_ERROR_MESSAGE = "Error: No s'ha pogut iniciar l'aplicació WiFi Connector"
+APP_ERROR_DETAILS = "Detalls: {error}"
+APP_ERROR_CHECK_LOGS = "Si us plau, revisa els logs per a més informació."
+
+# Search messages
+SEARCH_PROMPT = "Escriu a la cerca per trobar el teu centre educatiu"
+SEARCH_PROMPT_HINT = "Utilitza la cerca per filtrar els {count} centres disponibles"

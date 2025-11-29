@@ -1,0 +1,16 @@
+# Dependencias del proyecto WiFi Connector
+# Conexión a redes WiFi de centros educativos
+
+# GUI framework
+customtkinter>=5.2.0
+
+# Procesamiento de imágenes (iconos)
+pillow>=10.0.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+
+# Build
+pyinstaller>=6.0.0
