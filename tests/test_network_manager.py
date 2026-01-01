@@ -148,7 +148,7 @@ class TestGetAvailableNetworks:
         call_args = mock_run.call_args[0][0]
         assert call_args == ["netsh", "wlan", "show", "networks"]
     
-    @patch('subprocess.run')
+    @patch('wifi_connector.network.manager.subprocess.run')
     def test_uses_cp850_encoding(
         self,
         mock_run,

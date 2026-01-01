@@ -21,6 +21,7 @@ Aquesta aplicació simplifica la connexió a la xarxa WiFi dels centres educatiu
 - 🔐 Gestió segura de credencials
 - ⚡ Connexió automàtica en un sol clic
 - 📦 Disponible com executable (no cal instal·lar Python)
+- 🌟 Gestió de Favorits
 
 ## 🚀 Començar
 
@@ -61,7 +62,7 @@ python main.py
 
 Crea un arxiu JSON amb les credencials dels centres:
 
-```jso del co
+```json del centres
 [
   {
     "Codi": "08012345",

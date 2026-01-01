@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import webbrowser
 from typing import Optional
+from wifi_connector.utils import translations as t
 
 class AboutWindow(ctk.CTkToplevel):
     """Ventana para mostrar información de la aplicación y créditos."""
@@ -26,14 +27,14 @@ class AboutWindow(ctk.CTkToplevel):
 
         title_label = ctk.CTkLabel(
             main_frame,
-            text="WiFi de Centres Educatius",
+            text=t.ABOUT_TITLE,
             font=ctk.CTkFont(size=20, weight="bold")
         )
         title_label.pack(pady=(10, 5))
 
         version_label = ctk.CTkLabel(
             main_frame,
-            text="Versió 1.0",
+            text=t.ABOUT_VERSION,
             font=ctk.CTkFont(size=12),
             text_color="gray"
         )
@@ -55,21 +56,21 @@ class AboutWindow(ctk.CTkToplevel):
 
         dev_label = ctk.CTkLabel(
             main_frame,
-            text="Desenvolupat per:",
+            text=t.ABOUT_DEVELOPER,
             font=ctk.CTkFont(size=12, weight="bold")
         )
         dev_label.pack(pady=(0, 5))
 
         name_label = ctk.CTkLabel(
             main_frame,
-            text="Àlex Garcia Vilà",
+            text=t.ABOUT_DEVELOPER_NAME,
             font=ctk.CTkFont(size=14)
         )
         name_label.pack(pady=(0, 10))
 
         linkedin_btn = ctk.CTkButton(
             main_frame,
-            text="Veure Perfil de LinkedIn",
+            text=t.ABOUT_LINKEDIN,
             command=self._open_linkedin,
             width=200,
             height=35,
@@ -80,7 +81,7 @@ class AboutWindow(ctk.CTkToplevel):
 
         website_btn = ctk.CTkButton(
             main_frame,
-            text="Visita el meu portafolis",
+            text=t.ABOUT_PORTFOLIO,
             command=self._open_portfolio,
             width=200,
             height=35,

@@ -23,7 +23,7 @@ class TestProfileConnector(unittest.TestCase):
     def test_init(self):
         """Test de inicialización del conector."""
         self.assertEqual(self.connector.ssid, "gencat_ENS_EDU")
-        self.assertIsNotNone(self.connector.script_dir)
+        self.assertIsNotNone(self.connector._script_dir)
     
     def test_init_default_ssid(self):
         """Test de inicialización con SSID por defecto."""
@@ -43,7 +43,7 @@ class TestProfileConnector(unittest.TestCase):
         """Test de instalación exitosa del perfil WiFi."""
         # Configurar mocks
         mock_exists.return_value = True
-        mock_run.return_value = MagicMock(returncode=0, stdout="Perfil agregado", stderr="")
+        mock_run.return_value = MagicMock(returncode=0, stdout=b"Perfil agregado", stderr=b"")
         
         # Ejecutar
         success, message = self.connector._install_wifi_profile()
@@ -69,8 +69,8 @@ class TestProfileConnector(unittest.TestCase):
         mock_exists.return_value = True
         mock_run.return_value = MagicMock(
             returncode=1, 
-            stdout="El perfil ya está en la interfaz", 
-            stderr=""
+            stdout=b"El perfil ya est\xe1 en la interfaz", 
+            stderr=b""
         )
         
         # Ejecutar
@@ -101,8 +101,8 @@ class TestProfileConnector(unittest.TestCase):
         mock_exists.return_value = True
         mock_run.return_value = MagicMock(
             returncode=1, 
-            stdout="Error desconocido", 
-            stderr="Error de red"
+            stdout=b"Error desconocido", 
+            stderr=b"Error de red"
         )
         
         # Ejecutar
@@ -190,7 +190,7 @@ class TestProfileConnector(unittest.TestCase):
         """Test de configuración exitosa de credenciales EAP."""
         # Configurar mocks
         mock_exists.return_value = True
-        mock_run.return_value = MagicMock(returncode=0, stdout="Success", stderr="")
+        mock_run.return_value = MagicMock(returncode=0, stdout=b"Success", stderr=b"")
         
         # Ejecutar
         success, message = self.connector._configure_eap_credentials()
@@ -240,8 +240,8 @@ class TestProfileConnector(unittest.TestCase):
         mock_exists.return_value = True
         mock_run.return_value = MagicMock(
             returncode=1, 
-            stdout="", 
-            stderr="Error en configurar credencials"
+            stdout=b"", 
+            stderr=b"Error en configurar credencials"
         )
         
         # Ejecutar
@@ -249,7 +249,7 @@ class TestProfileConnector(unittest.TestCase):
         
         # Verificar
         self.assertFalse(success)
-        self.assertIn("Error de WLANSetEAPUserData", message)
+        self.assertIn("Error en configurar credencials", message)
     
     @patch('wifi_connector.core.profile_connector.subprocess.run')
     def test_connect_to_network_success(self, mock_run):
@@ -257,8 +257,8 @@ class TestProfileConnector(unittest.TestCase):
         # Configurar mock
         mock_run.return_value = MagicMock(
             returncode=0, 
-            stdout="Connectat correctament a gencat_ENS_EDU", 
-            stderr=""
+            stdout=b"Connectat correctament a gencat_ENS_EDU", 
+            stderr=b""
         )
         
         # Ejecutar
@@ -282,8 +282,8 @@ class TestProfileConnector(unittest.TestCase):
         # Configurar mock
         mock_run.return_value = MagicMock(
             returncode=1, 
-            stdout="", 
-            stderr="No es pot connectar a la xarxa"
+            stdout=b"", 
+            stderr=b"No es pot connectar a la xarxa"
         )
         
         # Ejecutar
@@ -300,8 +300,8 @@ class TestProfileConnector(unittest.TestCase):
         # Configurar mock - primera llamada muestra conectado
         mock_run.return_value = MagicMock(
             returncode=0,
-            stdout="SSID: gencat_ENS_EDU\nEstado: conectado",
-            stderr=""
+            stdout=b"SSID: gencat_ENS_EDU\nEstado: conectado",
+            stderr=b""
         )
         
         # Ejecutar
@@ -321,8 +321,8 @@ class TestProfileConnector(unittest.TestCase):
         # 'desconectado' contiene 'conectado' y el código lo detecta primero)
         mock_run.return_value = MagicMock(
             returncode=0,
-            stdout="SSID: gencat_ENS_EDU\nState: disconnected",
-            stderr=""
+            stdout=b"SSID: gencat_ENS_EDU\nState: disconnected",
+            stderr=b""
         )
         
         # Ejecutar
@@ -339,8 +339,8 @@ class TestProfileConnector(unittest.TestCase):
         # Configurar mock - siempre muestra autenticando
         mock_run.return_value = MagicMock(
             returncode=0,
-            stdout="SSID: gencat_ENS_EDU\nEstado: autenticando",
-            stderr=""
+            stdout=b"SSID: gencat_ENS_EDU\nEstado: autenticando",
+            stderr=b""
         )
         
         # Ejecutar
@@ -496,6 +496,80 @@ class TestProfileConnector(unittest.TestCase):
         # Verificar que el callback se llamó varias veces
         self.assertTrue(success)
         self.assertGreater(mock_callback.call_count, 3)  # Al menos 4 pasos
+
+
+class TestHasPermissionWarning(unittest.TestCase):
+    """Tests para el método _has_permission_warning."""
+    
+    def setUp(self):
+        """Configuración antes de cada test."""
+        self.connector = ProfileConnector("test_ssid")
+    
+    def test_detects_ubicacion_pattern(self):
+        """Test que detecta patrón 'ubicaci' (ubicación sin acento)."""
+        output = "error: se necesita permiso de ubicacion para completar"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_location_pattern(self):
+        """Test que detecta patrón 'location' en inglés."""
+        output = "location permission required to scan networks"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_elevacion_pattern(self):
+        """Test que detecta patrón 'elevaci' (elevación sin acento)."""
+        output = "se requiere elevacion de privilegios"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_wlan_api_error(self):
+        """Test que detecta error de la API WLAN."""
+        output = "error calling wlangetavailablenetworklist"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_acceso_denegado_spanish(self):
+        """Test que detecta 'acceso denegado' en español."""
+        output = "acceso denegado al recurso de red"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_access_denied_english(self):
+        """Test que detecta 'access denied' en inglés."""
+        output = "access denied while connecting to network"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_error_5_colon(self):
+        """Test que detecta 'error 5:' (código de acceso denegado)."""
+        output = "error 5: acceso denegado"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_detects_error_colon_5(self):
+        """Test que detecta 'error: 5' (formato alternativo)."""
+        output = "the operation failed with error: 5"
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_no_false_positive_on_normal_output(self):
+        """Test que no hay falsos positivos con salida normal."""
+        output = "connection request was completed successfully"
+        self.assertFalse(self.connector._has_permission_warning(output))
+    
+    def test_no_false_positive_on_empty_output(self):
+        """Test que no hay falsos positivos con salida vacía."""
+        output = ""
+        self.assertFalse(self.connector._has_permission_warning(output))
+    
+    def test_no_false_positive_on_generic_error(self):
+        """Test que no detecta errores genéricos como permisos."""
+        output = "error: red no disponible. error 10: tiempo agotado"
+        self.assertFalse(self.connector._has_permission_warning(output))
+    
+    def test_case_sensitivity(self):
+        """Test que la detección funciona con diferentes casos (el output debe estar en minúsculas)."""
+        # El método espera input ya en minúsculas
+        output = "ACCESS DENIED".lower()
+        self.assertTrue(self.connector._has_permission_warning(output))
+    
+    def test_multiple_patterns_in_output(self):
+        """Test con múltiples patrones en la misma salida."""
+        output = "error: location permission denied, access denied, error 5:"
+        self.assertTrue(self.connector._has_permission_warning(output))
 
 
 if __name__ == '__main__':

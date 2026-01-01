@@ -4,7 +4,6 @@ Este módulo proporciona utilidades para localizar correctamente archivos de rec
 al ejecutar como script de Python o como ejecutable de PyInstaller.
 """
 
-import os
 import sys
 from pathlib import Path
 
@@ -19,12 +18,9 @@ def get_base_path() -> Path:
     Returns:
         Objeto Path apuntando al directorio base
     """
-    if getattr(sys, 'frozen', False):
-        base_path = Path(sys._MEIPASS)
-    else:
-        base_path = Path(__file__).parent.parent.parent
-    
-    return base_path
+    if getattr(sys, "frozen", False):
+        return Path(sys._MEIPASS)
+    return Path(__file__).parent.parent.parent
 
 
 def get_json_path() -> Path:
@@ -36,43 +32,20 @@ def get_json_path() -> Path:
     Returns:
         Objeto Path apuntando al directorio Json
     """
-    if getattr(sys, 'frozen', False):
-        return Path(sys.executable).parent / 'Json'
-    else:
-        return Path('Json')
-
-
-def get_wifi_json_path() -> Path:
-    """Obtiene la ruta al archivo wifi.json.
-    
-    Returns:
-        Objeto Path apuntando a wifi.json
-    """
-    return get_json_path() / 'wifi.json'
-
-
-
-
-
-def get_debug_folder() -> Path:
-    """Obtiene la ruta a la carpeta de depuración.
-    
-    La carpeta de depuración se crea en el directorio de trabajo actual,
-    no en la ruta base, para que sea accesible al usuario.
-    
-    Returns:
-        Objeto Path apuntando al directorio de depuración
-    """
-    return Path.cwd() / 'debug'
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent / "Json"
+    return Path("Json")
 
 
 def get_logs_folder() -> Path:
     """Obtiene la ruta a la carpeta de Logs.
     
-    La carpeta de Logs se crea en el directorio de trabajo actual,
-    no en la ruta base, para que sea accesible al usuario.
+    Cuando se ejecuta como ejecutable, busca la carpeta Logs junto al archivo .exe.
+    Cuando se ejecuta como script, usa el directorio de trabajo actual.
     
     Returns:
         Objeto Path apuntando al directorio de Logs
     """
-    return Path.cwd() / 'Logs'
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent / "Logs"
+    return Path.cwd() / "Logs"

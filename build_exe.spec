@@ -20,8 +20,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        # Json/wifi.json se excluye - debe copiarse manualmente junto al .exe
-        ('images/wifi_icon.ico', 'images'),
+        # Carpeta Json/ excluida completamente
+        ('images', 'images'),
         ('xml', 'xml'),
         ('wlanseteapuserdata', 'wlanseteapuserdata'),
         (customtkinter_path, 'customtkinter'),

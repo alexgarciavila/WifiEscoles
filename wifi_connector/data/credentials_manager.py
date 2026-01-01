@@ -64,8 +64,8 @@ class CredentialsManager:
                       en modo script como ejecutable.
         """
         if json_path is None:
-            from wifi_connector.utils.paths import get_wifi_json_path
-            self.json_path = str(get_wifi_json_path())
+            from wifi_connector.utils.paths import get_json_path
+            self.json_path = str(get_json_path() / "wifi.json")
         else:
             self.json_path = json_path
         

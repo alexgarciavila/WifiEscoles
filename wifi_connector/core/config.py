@@ -8,6 +8,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+from wifi_connector.utils import translations as t
+
 
 @dataclass
 class Config:
@@ -37,16 +39,16 @@ class Config:
 
         if self.pause_duration < 0:
             raise ValueError(
-                f"pause_duration debe ser no negativo, "
-                f"se obtuvo {self.pause_duration}"
+                t.CONFIG_ERROR_PAUSE_NEGATIVE.format(value=self.pause_duration)
             )
 
 
 
         if self.credential_dialog_wait_time < 0:
             raise ValueError(
-                f"credential_dialog_wait_time debe ser no negativo, "
-                f"se obtuvo {self.credential_dialog_wait_time}"
+                t.CONFIG_ERROR_WAIT_NEGATIVE.format(
+                    value=self.credential_dialog_wait_time
+                )
             )
 
     @classmethod
@@ -66,14 +68,12 @@ class Config:
         file_path = Path(path)
 
         if not file_path.exists():
-            raise FileNotFoundError(f"Archivo de configuración no encontrado: {path}")
+            raise FileNotFoundError(t.CONFIG_ERROR_FILE_NOT_FOUND.format(path=path))
 
         suffix = file_path.suffix.lower()
 
         if suffix != '.json':
-            raise ValueError(
-                f"Formato de archivo no soportado: {suffix}. Use .json"
-            )
+            raise ValueError(t.CONFIG_ERROR_UNSUPPORTED_FORMAT.format(suffix=suffix))
 
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)

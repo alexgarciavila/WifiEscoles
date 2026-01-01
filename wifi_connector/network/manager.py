@@ -7,6 +7,7 @@ e interacción con el panel de red.
 """
 
 import subprocess
+import os
 from typing import List
 from wifi_connector.utils.logger import Logger
 from wifi_connector.utils import translations as t
@@ -116,7 +117,8 @@ class NetworkManager:
                 command,
                 check=True,
                 capture_output=True,
-                encoding='cp850'
+                encoding='cp850',
+                creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
             )
             return result.stdout
         except subprocess.CalledProcessError as e:
