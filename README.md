@@ -106,3 +106,11 @@ Aquest projecte està llicenciat sota la [GNU General Public License v3.0](LICEN
 ## 🤝 Contribucions
 
 Les contribucions són benvingudes! Obre un issue per reportar problemes o suggerir millores.
+
+## 🙏 Agraïments i Atribucions
+
+Aquest projecte utilitza el component **WLANSetEAPUserData** desenvolupat per Simon Rozman:
+
+- **Repositori**: [rozmansi/WLANSetEAPUserData](https://github.com/rozmansi/WLANSetEAPUserData)
+- **Descripció**: Eina per configurar credencials d'usuari EAP per a connexions WLAN a Windows
+- **Llicència**: GPL-3.0

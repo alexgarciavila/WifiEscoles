@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.4] - 2026-01-01
+
+### Afegit
+
+- **Atribució i agraïments**: Afegida secció al README reconeixent l'ús del component **WLANSetEAPUserData** desenvolupat per Simon Rozman ([rozmansi/WLANSetEAPUserData](https://github.com/rozmansi/WLANSetEAPUserData)). Aquest component és essencial per configurar credencials d'usuari EAP per a connexions WLAN a Windows.
+
+---
+
 ## [1.2.3] - 2025-12-25
 
 ### Canviat
