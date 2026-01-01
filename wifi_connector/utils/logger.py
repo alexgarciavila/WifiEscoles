@@ -85,8 +85,7 @@ class Logger:
             message: Mensaje a registrar
         """
         cls._ensure_setup()
-        if cls._logger:
-            cls._logger.info(message)
+        cls._logger.info(message)
 
     @classmethod
     def error(cls, message: str, exc_info: bool = False) -> None:
@@ -98,8 +97,7 @@ class Logger:
             exc_info: Incluir información de excepción si es True
         """
         cls._ensure_setup()
-        if cls._logger:
-            cls._logger.error(message, exc_info=exc_info)
+        cls._logger.error(message, exc_info=exc_info)
 
     @classmethod
     def debug(cls, message: str) -> None:
@@ -110,8 +108,7 @@ class Logger:
             message: Mensaje de depuración a registrar
         """
         cls._ensure_setup()
-        if cls._logger:
-            cls._logger.debug(message)
+        cls._logger.debug(message)
 
     @classmethod
     def warning(cls, message: str) -> None:
@@ -122,5 +119,16 @@ class Logger:
             message: Mensaje de advertencia a registrar
         """
         cls._ensure_setup()
-        if cls._logger:
-            cls._logger.warning(message)
+        cls._logger.warning(message)
+
+    @classmethod
+    def critical(cls, message: str, exc_info: bool = False) -> None:
+        """
+        Registra mensaje crítico.
+
+        Args:
+            message: Mensaje crítico a registrar
+            exc_info: Incluir información de excepción si es True
+        """
+        cls._ensure_setup()
+        cls._logger.critical(message, exc_info=exc_info)

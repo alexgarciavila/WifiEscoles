@@ -385,30 +385,27 @@ class TestConnectionActions:
             text="Connectant..."
         )
     
-    @patch('wifi_connector.gui.main_window.Config')
-    @patch('wifi_connector.gui.main_window.ProfileConnector')
+    @patch('wifi_connector.gui.main_window.NetworkManager')
     @patch('wifi_connector.gui.main_window.CredentialsManager')
     def test_on_disconnect_clicked_calls_disconnect(
         self,
         mock_creds_manager_class,
-        mock_wifi_connector_class,
-        mock_config_class,
+        mock_network_manager_class,
         mock_ctk_modules,
-        mock_credentials_manager,
-        mock_wifi_connector
+        mock_credentials_manager
     ):
         """Test that disconnect is called when Disconnect button is clicked."""
         mock_creds_manager_class.return_value = mock_credentials_manager
-        mock_wifi_connector_class.return_value = mock_wifi_connector
-        mock_config = MagicMock()
-        mock_config_class.default.return_value = mock_config
+        mock_network_manager = MagicMock()
+        mock_network_manager.disconnect.return_value = True
+        mock_network_manager_class.return_value = mock_network_manager
         
         main_window = MainWindow()
         main_window.status_label = MagicMock()
         
         main_window._on_disconnect_clicked()
         
-        mock_wifi_connector.disconnect.assert_called_once()
+        mock_network_manager.disconnect.assert_called_once()
     
     @patch('wifi_connector.gui.main_window.CredentialsManager')
     def test_on_disconnect_clicked_during_connection_shows_error(
@@ -469,3 +466,43 @@ class TestWindowClose:
         
         main_window.status_label.configure.assert_called()
 
+
+class TestDarkThemeIntegration:
+    """Tests para verificar que la GUI usa tema oscuro correctamente."""
+    
+    @patch('wifi_connector.utils.theme.ctk')
+    @patch('wifi_connector.utils.theme.Logger')
+    def test_dark_theme_applied_before_gui_creation(self, mock_logger, mock_theme_ctk):
+        """Verifica que el tema oscuro se puede configurar antes de crear la GUI."""
+        from wifi_connector.utils.theme import setup_dark_theme
+        
+        # Configurar tema
+        setup_dark_theme()
+        
+        # Verificar que API fue llamada
+        mock_theme_ctk.set_appearance_mode.assert_called_once_with("dark")
+        mock_theme_ctk.set_default_color_theme.assert_called_once_with("blue")
+        
+        # Verificar logging
+        from wifi_connector.utils import translations as t
+        mock_logger.info.assert_called_once_with(t.THEME_LOG_CONFIGURED)
+    
+    @patch('wifi_connector.gui.main_window.CredentialsManager')
+    def test_gui_components_use_customtkinter_widgets(
+        self,
+        mock_creds_manager_class,
+        mock_ctk_modules
+    ):
+        """Verifica que los componentes GUI usan widgets customTkinter."""
+        mock_creds_manager = MagicMock()
+        mock_creds_manager.load_credentials.return_value = True
+        mock_creds_manager.get_all_centers.return_value = []
+        mock_creds_manager_class.return_value = mock_creds_manager
+        
+        main_window = MainWindow()
+        
+        # Verificar que se usan widgets customTkinter (CTk*)
+        # Los mocks demuestran que MainWindow usa CTkFrame, CTkButton, etc.
+        assert mock_ctk_modules['frame'].called
+        assert mock_ctk_modules['button'].called
+        assert mock_ctk_modules['label'].called
