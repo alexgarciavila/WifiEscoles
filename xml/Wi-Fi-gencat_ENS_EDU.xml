@@ -35,9 +35,10 @@
 								<Type>25</Type>
 								<EapType xmlns="http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1">
 									<ServerValidation>
-										<DisableUserPromptForServerValidation>false</DisableUserPromptForServerValidation>
+										<DisableUserPromptForServerValidation>true</DisableUserPromptForServerValidation>
 										<ServerNames></ServerNames>
 										<TrustedRootCA>50 9e e0 5c b3 99 5c d3 a7 d3 81 f7 91 67 ea f1 96 f2 a6 56 </TrustedRootCA>
+										<TrustedRootCA>bf 20 92 e0 6e a1 bf 70 e3 91 1b 17 a3 5a 03 39 55 7b 1a 93 </TrustedRootCA>
 									</ServerValidation>
 									<FastReconnect>true</FastReconnect>
 									<InnerEapOptional>false</InnerEapOptional>

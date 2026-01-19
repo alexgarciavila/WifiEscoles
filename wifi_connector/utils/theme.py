@@ -35,11 +35,6 @@ def setup_dark_theme() -> None:
     Efectos secundarios:
         - Registra mensaje de éxito/fallo usando wifi_connector.utils.logger
         - Modifica la configuración global de apariencia de customTkinter
-        
-    Example:
-        >>> from wifi_connector.utils.theme import setup_dark_theme
-        >>> setup_dark_theme()  # Configurar antes de crear ventanas
-        >>> # Ahora es seguro crear ventanas GUI
     """
     try:
         ctk.set_appearance_mode(APPEARANCE_MODE)

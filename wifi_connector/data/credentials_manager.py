@@ -43,8 +43,8 @@ class CenterCredentials:
         """
         query_lower = query.lower()
         return (
-            query_lower in self.center_code.lower() or
-            query_lower in self.center_name.lower()
+            query_lower in self.center_code.lower()
+            or query_lower in self.center_name.lower()
         )
 
 
@@ -65,10 +65,12 @@ class CredentialsManager:
         """
         if json_path is None:
             from wifi_connector.utils.paths import get_json_path
-            self.json_path = str(get_json_path() / "wifi.json")
+
+            self.json_path = str(get_json_path() / "Wifi.json")
+
         else:
             self.json_path = json_path
-        
+
         self.centers: List[CenterCredentials] = []
         Logger.debug(t.CREDS_LOG_INIT.format(path=self.json_path))
 
@@ -89,7 +91,7 @@ class CredentialsManager:
 
         try:
             # Read JSON file with UTF-8-sig to handle BOM
-            with open(self.json_path, 'r', encoding='utf-8-sig') as f:
+            with open(self.json_path, "r", encoding="utf-8-sig") as f:
                 data = json.load(f)
 
             Logger.debug(t.CREDS_LOG_JSON_LOADED)
@@ -203,10 +205,7 @@ class CredentialsManager:
             Logger.debug(t.CREDS_LOG_EMPTY_QUERY)
             return self.get_all_centers()
 
-        results = [
-            center for center in self.centers
-            if center.matches_query(query)
-        ]
+        results = [center for center in self.centers if center.matches_query(query)]
 
         Logger.debug(t.CREDS_LOG_FOUND_MATCHING.format(count=len(results)))
         return results
@@ -229,14 +228,14 @@ class CredentialsManager:
         if not isinstance(entry, dict):
             raise TypeError(t.CREDS_ERROR_NOT_DICT)
 
-        required_fields = ['Codi', 'Centre', 'Usuari', 'Contrasenya']
+        required_fields = ["Codi", "Centre", "Usuari", "Contrasenya"]
         for field in required_fields:
             if field not in entry:
                 raise KeyError(t.CREDS_ERROR_MISSING_FIELD.format(field=field))
 
         return CenterCredentials(
-            center_code=str(entry['Codi']).strip(),
-            center_name=str(entry['Centre']).strip(),
-            username=str(entry['Usuari']).strip(),
-            password=str(entry['Contrasenya']).strip()
+            center_code=str(entry["Codi"]).strip(),
+            center_name=str(entry["Centre"]).strip(),
+            username=str(entry["Usuari"]).strip(),
+            password=str(entry["Contrasenya"]).strip(),
         )

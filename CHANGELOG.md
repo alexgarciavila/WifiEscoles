@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.5] - 2026-01-19
+
+### Afegit
+
+- **Nou fitxer XML**: S'ha afegit nou fitxer XML amb el nou TrustedRootCA a causa del canvi de clúster
+
+---
+
 ## [1.2.4] - 2026-01-01
 
 ### Afegit

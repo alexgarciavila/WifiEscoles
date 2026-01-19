@@ -320,7 +320,7 @@ STATUS_ERROR_CONNECTION_CHECK_LOGS = "Error de connexió. Revisa els Logs per m�
 STATUS_ERROR_CONNECTION_FAILED = "Connection error: {error}"
 # About window
 ABOUT_TITLE = "WiFi de Centres Educatius"
-ABOUT_VERSION = "Versió 1.2.4"
+ABOUT_VERSION = "Versió 1.2.5"
 ABOUT_DEVELOPER = "Desenvolupat per:"
 ABOUT_DEVELOPER_NAME = "Àlex Garcia Vilà"
 ABOUT_LINKEDIN = "Veure Perfil de LinkedIn"

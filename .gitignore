@@ -39,6 +39,9 @@ pytest*
 *.swp
 *.swo
 *~
+.github/
+.specify/
+specs/
 
 # Claude AI
 .claude/

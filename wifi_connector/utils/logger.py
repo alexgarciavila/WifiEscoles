@@ -22,11 +22,7 @@ class Logger:
     _is_setup: bool = False
 
     @classmethod
-    def setup(
-        cls,
-        level: str = "INFO",
-        log_file: Optional[str] = None
-    ) -> None:
+    def setup(cls, level: str = "INFO", log_file: Optional[str] = None) -> None:
         """
         Configura el sistema de logging.
 
@@ -44,8 +40,8 @@ class Logger:
         cls._logger.handlers.clear()
 
         formatter = logging.Formatter(
-            fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
 
         console_handler = logging.StreamHandler()
@@ -53,20 +49,29 @@ class Logger:
         console_handler.setFormatter(formatter)
         cls._logger.addHandler(console_handler)
 
+        file_handler = None
         if log_file is None:
             from wifi_connector.utils.paths import get_logs_folder
             from datetime import datetime
-            
+
             logs_folder = get_logs_folder()
-            logs_folder.mkdir(parents=True, exist_ok=True)
-            
-            timestamp = datetime.now().strftime("%d-%m-%Y")
-            log_file = str(logs_folder / f"{timestamp}.log")
-        
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
-        file_handler.setLevel(getattr(logging, level.upper()))
-        file_handler.setFormatter(formatter)
-        cls._logger.addHandler(file_handler)
+            try:
+                logs_folder.mkdir(parents=True, exist_ok=True)
+                timestamp = datetime.now().strftime("%d-%m-%Y")
+                log_file = str(logs_folder / f"{timestamp}.log")
+            except OSError:
+                log_file = None
+
+        if log_file:
+            try:
+                file_handler = logging.FileHandler(log_file, encoding="utf-8")
+            except OSError:
+                file_handler = None
+
+        if file_handler:
+            file_handler.setLevel(getattr(logging, level.upper()))
+            file_handler.setFormatter(formatter)
+            cls._logger.addHandler(file_handler)
 
         cls._is_setup = True
 
@@ -85,7 +90,10 @@ class Logger:
             message: Mensaje a registrar
         """
         cls._ensure_setup()
-        cls._logger.info(message)
+        if cls._logger:
+            cls._logger.info(message)
+        else:
+            logging.info(message)
 
     @classmethod
     def error(cls, message: str, exc_info: bool = False) -> None:
@@ -97,7 +105,10 @@ class Logger:
             exc_info: Incluir información de excepción si es True
         """
         cls._ensure_setup()
-        cls._logger.error(message, exc_info=exc_info)
+        if cls._logger:
+            cls._logger.error(message, exc_info=exc_info)
+        else:
+            logging.error(message, exc_info=exc_info)
 
     @classmethod
     def debug(cls, message: str) -> None:
@@ -108,7 +119,10 @@ class Logger:
             message: Mensaje de depuración a registrar
         """
         cls._ensure_setup()
-        cls._logger.debug(message)
+        if cls._logger:
+            cls._logger.debug(message)
+        else:
+            logging.debug(message)
 
     @classmethod
     def warning(cls, message: str) -> None:
@@ -119,7 +133,10 @@ class Logger:
             message: Mensaje de advertencia a registrar
         """
         cls._ensure_setup()
-        cls._logger.warning(message)
+        if cls._logger:
+            cls._logger.warning(message)
+        else:
+            logging.warning(message)
 
     @classmethod
     def critical(cls, message: str, exc_info: bool = False) -> None:
@@ -131,4 +148,7 @@ class Logger:
             exc_info: Incluir información de excepción si es True
         """
         cls._ensure_setup()
-        cls._logger.critical(message, exc_info=exc_info)
+        if cls._logger:
+            cls._logger.critical(message, exc_info=exc_info)
+        else:
+            logging.critical(message, exc_info=exc_info)

@@ -13,12 +13,12 @@ import os
 
 from wifi_connector.data.credentials_manager import (
     CredentialsManager,
-    CenterCredentials
+    CenterCredentials,
 )
 from wifi_connector.data.favorites_manager import FavoritesManager
 from wifi_connector.core.profile_connector import ProfileConnector
 from wifi_connector.network.manager import NetworkManager
-from wifi_connector.core.config import Config
+
 from wifi_connector.utils.logger import Logger
 from wifi_connector.utils.paths import get_base_path, get_json_path
 from wifi_connector.utils import translations as t
@@ -55,21 +55,25 @@ class MainWindow:
         try:
             fav_path = get_base_path() / "images" / "fav.png"
             fav_unchecked_path = get_base_path() / "images" / "fav_unchecked.png"
-            
+
             if fav_path.exists() and fav_unchecked_path.exists():
                 self.fav_icon = ctk.CTkImage(
                     light_image=Image.open(fav_path),
                     dark_image=Image.open(fav_path),
-                    size=(20, 20)
+                    size=(20, 20),
                 )
                 self.fav_unchecked_icon = ctk.CTkImage(
                     light_image=Image.open(fav_unchecked_path),
                     dark_image=Image.open(fav_unchecked_path),
-                    size=(20, 20)
+                    size=(20, 20),
                 )
                 Logger.info(t.MAIN_LOG_FAV_ICONS_LOADED)
             else:
-                Logger.warning(t.MAIN_LOG_FAV_ICONS_NOT_FOUND.format(fav_path=fav_path, fav_unchecked_path=fav_unchecked_path))
+                Logger.warning(
+                    t.MAIN_LOG_FAV_ICONS_NOT_FOUND.format(
+                        fav_path=fav_path, fav_unchecked_path=fav_unchecked_path
+                    )
+                )
                 self.fav_icon = None
                 self.fav_unchecked_icon = None
         except Exception as e:
@@ -78,12 +82,14 @@ class MainWindow:
             self.fav_unchecked_icon = None
 
         self.credentials_manager = CredentialsManager()
-        
+
         # Inicializar FavoritesManager
         favorites_path = get_json_path() / "fav.json"
 
-        self.favorites_manager = FavoritesManager(favorites_path, self.credentials_manager)
-        
+        self.favorites_manager = FavoritesManager(
+            favorites_path, self.credentials_manager
+        )
+
         self.profile_connector: Optional[ProfileConnector] = None
 
         self.selected_center: Optional[CenterCredentials] = None
@@ -106,14 +112,14 @@ class MainWindow:
         try:
             self.credentials_manager.load_credentials()
             self.all_centers = self.credentials_manager.get_all_centers()
-            
+
             # Cargar favoritos después de las credenciales
             self.favorites_manager.load_favorites()
-            
+
             self._populate_centers_table([], show_prompt=True)
             self.update_status(
                 f"Carregat {len(self.all_centers)} centres. Utilitza la cerca per trobar el teu centre.",
-                "info"
+                "info",
             )
         except Exception as e:
             Logger.error(t.MAIN_LOG_LOAD_ERROR.format(error=e))
@@ -137,11 +143,7 @@ class MainWindow:
         """
         Logger.debug(t.MAIN_LOG_STATUS_UPDATE.format(type=status_type, message=message))
 
-        color_map = {
-            "success": "#2ecc71",
-            "error": "#e74c3c",
-            "info": "#3498db"
-        }
+        color_map = {"success": "#2ecc71", "error": "#e74c3c", "info": "#3498db"}
 
         color = color_map.get(status_type, "#95a5a6")
 
@@ -161,7 +163,7 @@ class MainWindow:
         title_label = ctk.CTkLabel(
             header_frame,
             text=t.WINDOW_TITLE_MAIN,
-            font=ctk.CTkFont(size=24, weight="bold")
+            font=ctk.CTkFont(size=24, weight="bold"),
         )
         title_label.pack(side="left", expand=True)
 
@@ -175,7 +177,7 @@ class MainWindow:
             font=ctk.CTkFont(size=16, weight="bold"),
             fg_color="#34495e",
             hover_color="#2c3e50",
-            command=self._on_about_clicked
+            command=self._on_about_clicked,
         )
         about_btn.pack(side="right", padx=4, pady=4)
 
@@ -189,7 +191,7 @@ class MainWindow:
             corner_radius=5,
             fg_color="#34495e",
             hover_color="#2c3e50",
-            command=self._toggle_view_mode
+            command=self._toggle_view_mode,
         )
         self.toggle_button.pack(side="right", padx=4, pady=4)
 
@@ -223,21 +225,15 @@ class MainWindow:
 
         # Etiqueta de búsqueda
         search_label = ctk.CTkLabel(
-            search_frame,
-            text=t.SEARCH_LABEL,
-            font=ctk.CTkFont(size=14)
+            search_frame, text=t.SEARCH_LABEL, font=ctk.CTkFont(size=14)
         )
         search_label.pack(side="left", padx=(10, 5))
 
         # Campo de entrada de búsqueda
         self.search_entry = ctk.CTkEntry(
-            search_frame,
-            placeholder_text=t.SEARCH_PLACEHOLDER,
-            width=400
+            search_frame, placeholder_text=t.SEARCH_PLACEHOLDER, width=400
         )
-        self.search_entry.pack(
-            side="left", padx=(
-                0, 10), fill="x", expand=True)
+        self.search_entry.pack(side="left", padx=(0, 10), fill="x", expand=True)
 
         # Vincular evento de búsqueda
         self.search_entry.bind("<KeyRelease>", self._on_search_changed)
@@ -279,8 +275,7 @@ class MainWindow:
                     self._populate_centers_table([], show_prompt=False)
                     if self.center_count_label:
                         self.center_count_label.configure(
-                            text=t.NO_FAVORITES,
-                            text_color="#f39c12"
+                            text=t.NO_FAVORITES, text_color="#f39c12"
                         )
                 else:
                     # Mostrar todos los favoritos
@@ -291,25 +286,27 @@ class MainWindow:
                 if self.center_count_label:
                     self.center_count_label.configure(
                         text=t.SEARCH_PROMPT_HINT.format(count=len(self.all_centers)),
-                        text_color="#3498db"
+                        text_color="#3498db",
                     )
             return
-        
+
         # Aplicar consulta de búsqueda a los centros base
         if self.view_mode == "favorites":
             # Buscar dentro de favoritos
             filtered_centers = [
-                center for center in base_centers
-                if query.lower() in center.center_code.lower() or query.lower() in center.center_name.lower()
+                center
+                for center in base_centers
+                if query.lower() in center.center_code.lower()
+                or query.lower() in center.center_name.lower()
             ]
-            
+
             if not filtered_centers:
                 # Sin resultados en favoritos - mostrar mensaje contextual
                 self._populate_centers_table([], show_prompt=False)
                 if self.center_count_label:
                     self.center_count_label.configure(
                         text=t.NO_FAVORITES_SEARCH.format(query=query),
-                        text_color="#f39c12"
+                        text_color="#f39c12",
                     )
             else:
                 self._populate_centers_table(filtered_centers)
@@ -335,32 +332,24 @@ class MainWindow:
         table_title = ctk.CTkLabel(
             table_header_frame,
             text=t.CENTERS_TAB,
-            font=ctk.CTkFont(size=16, weight="bold")
+            font=ctk.CTkFont(size=16, weight="bold"),
         )
         table_title.pack(side="left", padx=10)
 
         # Etiqueta de contador de centros
         self.center_count_label = ctk.CTkLabel(
-            table_header_frame,
-            text="",
-            font=ctk.CTkFont(size=12),
-            text_color="#95a5a6"
+            table_header_frame, text="", font=ctk.CTkFont(size=12), text_color="#95a5a6"
         )
         self.center_count_label.pack(side="left", padx=10)
 
         # Crear marco desplazable para centros con altura reducida para panel de credenciales
-        self.centers_frame = ctk.CTkScrollableFrame(
-            parent,
-            height=180
-        )
+        self.centers_frame = ctk.CTkScrollableFrame(parent, height=180)
         self.centers_frame.pack(fill="both", expand=True, pady=(0, 10))
 
         Logger.debug(t.MAIN_LOG_TABLE_CREATED)
 
     def _populate_centers_table(
-        self,
-        centers: List[CenterCredentials],
-        show_prompt: bool = False
+        self, centers: List[CenterCredentials], show_prompt: bool = False
     ) -> None:
         """Rellena la tabla con los datos de los centros.
 
@@ -376,7 +365,7 @@ class MainWindow:
         self.center_buttons.clear()
 
         # Restablecer posición de desplazamiento al inicio para corregir error al filtrar de lista larga a corta
-        if self.centers_frame and hasattr(self.centers_frame, '_parent_canvas'):
+        if self.centers_frame and hasattr(self.centers_frame, "_parent_canvas"):
             self.centers_frame._parent_canvas.yview_moveto(0)
 
         if not centers:
@@ -386,16 +375,16 @@ class MainWindow:
                     self.centers_frame,
                     text=t.SEARCH_PROMPT,
                     font=ctk.CTkFont(size=16, weight="bold"),
-                    text_color="#3498db"
+                    text_color="#3498db",
                 )
                 prompt_label.pack(pady=40)
                 self.center_buttons.append(prompt_label)
-                
+
                 # Actualizar etiqueta de contador para el mensaje
                 if self.center_count_label:
                     self.center_count_label.configure(
                         text=t.SEARCH_PROMPT_HINT.format(count=len(self.all_centers)),
-                        text_color="#3498db"
+                        text_color="#3498db",
                     )
             else:
                 # Mostrar mensaje "Sin resultados"
@@ -403,7 +392,7 @@ class MainWindow:
                     self.centers_frame,
                     text=t.NO_RESULTS,
                     font=ctk.CTkFont(size=14),
-                    text_color="#95a5a6"
+                    text_color="#95a5a6",
                 )
                 no_results_label.pack(pady=20)
                 self.center_buttons.append(no_results_label)
@@ -411,15 +400,14 @@ class MainWindow:
                 # Actualizar etiqueta de contador para sin resultados
                 if self.center_count_label:
                     self.center_count_label.configure(
-                        text=t.NO_RESULTS,
-                        text_color="#e74c3c"
+                        text=t.NO_RESULTS, text_color="#e74c3c"
                     )
             return
 
         # Limitar la visualización a los primeros 20 centros por rendimiento
         MAX_DISPLAY = 20
         centers_to_display = centers[:MAX_DISPLAY]
-        
+
         # Crear una fila para cada centro
         for center in centers_to_display:
             center_frame = self._create_center_row(center)
@@ -430,13 +418,15 @@ class MainWindow:
         if self.center_count_label:
             if len(centers) > MAX_DISPLAY:
                 self.center_count_label.configure(
-                    text=t.SHOWING_FIRST_CENTERS.format(max=MAX_DISPLAY, total=len(centers)),
-                    text_color="#f39c12"
+                    text=t.SHOWING_FIRST_CENTERS.format(
+                        max=MAX_DISPLAY, total=len(centers)
+                    ),
+                    text_color="#f39c12",
                 )
             else:
                 self.center_count_label.configure(
                     text=t.SHOWING_CENTERS.format(count=len(centers)),
-                    text_color="#95a5a6"
+                    text_color="#95a5a6",
                 )
 
         Logger.debug(t.MAIN_LOG_TABLE_POPULATED)
@@ -465,7 +455,7 @@ class MainWindow:
                 height=28,
                 fg_color="transparent",
                 hover_color=("#d0d0d0", "#3a3a3a"),
-                command=lambda c=center: self._toggle_favorite(c)
+                command=lambda c=center: self._toggle_favorite(c),
             )
             fav_button.pack(side="left", padx=(5, 0))
 
@@ -479,7 +469,7 @@ class MainWindow:
             fg_color="transparent",
             hover_color=("#3b8ed0", "#1f6aa5"),
             text_color=("gray10", "gray90"),
-            height=28
+            height=28,
         )
         center_button.pack(side="left", fill="x", expand=True, padx=5, pady=4)
 
@@ -495,17 +485,24 @@ class MainWindow:
             if self.favorites_manager.is_favorite(center.center_code):
                 self.favorites_manager.remove_favorite(center.center_code)
                 Logger.info(t.VIEW_LOG_FAV_REMOVED.format(code=center.center_code))
-                self.update_status(t.STATUS_FAV_REMOVED.format(code=center.center_code), "info")
+                self.update_status(
+                    t.STATUS_FAV_REMOVED.format(code=center.center_code), "info"
+                )
             else:
                 self.favorites_manager.add_favorite(center)
                 Logger.info(t.VIEW_LOG_FAV_ADDED.format(code=center.center_code))
-                self.update_status(t.STATUS_FAV_ADDED.format(code=center.center_code), "success")
-            
+                self.update_status(
+                    t.STATUS_FAV_ADDED.format(code=center.center_code), "success"
+                )
+
             # Actualizar la vista actual para refrescar el icono
             query = self.search_entry.get() if self.search_entry else ""
             self._filter_centers(query)
         except Exception as e:
-            Logger.error(t.MAIN_LOG_ERROR_TOGGLE_FAV.format(code=center.center_code, error=e), exc_info=True)
+            Logger.error(
+                t.MAIN_LOG_ERROR_TOGGLE_FAV.format(code=center.center_code, error=e),
+                exc_info=True,
+            )
             self.update_status(t.STATUS_ERROR_TOGGLE_FAV.format(error=e), "error")
 
     def _toggle_view_mode(self) -> None:
@@ -514,20 +511,16 @@ class MainWindow:
             if self.view_mode == "all":
                 # Cambiar a modo favoritos
                 self.view_mode = "favorites"
-                self.toggle_button.configure(
-                    image=self.fav_icon
-                )
+                self.toggle_button.configure(image=self.fav_icon)
                 Logger.info(t.VIEW_LOG_SWITCHED_FAVORITES)
                 self.update_status(t.STATUS_SHOWING_FAVORITES, "info")
             else:
                 # Cambiar a modo todos los centros
                 self.view_mode = "all"
-                self.toggle_button.configure(
-                    image=self.fav_unchecked_icon
-                )
+                self.toggle_button.configure(image=self.fav_unchecked_icon)
                 Logger.info(t.VIEW_LOG_SWITCHED_ALL)
                 self.update_status(t.STATUS_SHOWING_ALL, "info")
-            
+
             # Actualizar la vista actual
             query = self.search_entry.get() if self.search_entry else ""
             self._filter_centers(query)
@@ -542,58 +535,56 @@ class MainWindow:
             center: Objeto CenterCredentials seleccionado.
         """
         Logger.info(
-            t.MAIN_LOG_CENTER_SELECTED.format(code=center.center_code, name=center.center_name))
+            t.MAIN_LOG_CENTER_SELECTED.format(
+                code=center.center_code, name=center.center_name
+            )
+        )
 
         self.selected_center = center
 
         # Resaltar el botón seleccionado buscándolo en los marcos
         expected_text = f"{center.center_code} - {center.center_name}"
-        
+
         for widget in self.center_buttons:
             if isinstance(widget, ctk.CTkFrame):
                 # Obtener el botón dentro del marco
                 for child in widget.winfo_children():
                     if isinstance(child, ctk.CTkButton):
                         button_text = child.cget("text")
-                        
+
                         if button_text == expected_text:
                             # Resaltar botón seleccionado
                             child.configure(
-                                fg_color=("#3b8ed0", "#1f6aa5"),
-                                text_color="white"
+                                fg_color=("#3b8ed0", "#1f6aa5"), text_color="white"
                             )
                         else:
                             # Restablecer otros botones
                             child.configure(
-                                fg_color="transparent",
-                                text_color=("gray10", "gray90")
+                                fg_color="transparent", text_color=("gray10", "gray90")
                             )
 
         # Mostrar y actualizar panel de credenciales
         if self.credentials_panel:
             self.credentials_panel.pack(fill="x", pady=(0, 10))
-            
+
             # Actualizar campo de nombre de usuario
             if self.username_entry:
                 self.username_entry.configure(state="normal")
                 self.username_entry.delete(0, "end")
                 self.username_entry.insert(0, center.username)
                 self.username_entry.configure(state="readonly")
-            
+
             # Actualizar campo de contraseña
             if self.password_entry:
                 self.password_entry.configure(state="normal")
                 self.password_entry.delete(0, "end")
                 self.password_entry.insert(0, center.password)
                 self.password_entry.configure(state="readonly")
-            
+
             # Forzar la ventana a actualizar el diseño
             self.window.update_idletasks()
 
-        self.update_status(
-            f"Seleccionat: {center.center_name}",
-            "info"
-        )
+        self.update_status(f"Seleccionat: {center.center_name}", "info")
 
     def _create_credentials_panel(self, parent: ctk.CTkFrame) -> None:
         """Crea el panel de visualización de credenciales con botones de copiar.
@@ -611,7 +602,7 @@ class MainWindow:
         credentials_title = ctk.CTkLabel(
             self.credentials_panel,
             text=t.CREDENTIALS_TITLE,
-            font=ctk.CTkFont(size=14, weight="bold")
+            font=ctk.CTkFont(size=14, weight="bold"),
         )
         credentials_title.pack(anchor="w", padx=10, pady=(10, 5))
 
@@ -624,14 +615,12 @@ class MainWindow:
             text=t.USERNAME_LABEL,
             font=ctk.CTkFont(size=12),
             width=80,
-            anchor="w"
+            anchor="w",
         )
         username_label.pack(side="left", padx=(5, 10))
 
         self.username_entry = ctk.CTkEntry(
-            username_frame,
-            font=ctk.CTkFont(size=12),
-            state="readonly"
+            username_frame, font=ctk.CTkFont(size=12), state="readonly"
         )
         self.username_entry.pack(side="left", fill="x", expand=True, padx=(0, 5))
 
@@ -641,7 +630,7 @@ class MainWindow:
             command=self._copy_username,
             width=80,
             height=30,
-            font=ctk.CTkFont(size=12)
+            font=ctk.CTkFont(size=12),
         )
         copy_username_btn.pack(side="left", padx=5)
 
@@ -654,7 +643,7 @@ class MainWindow:
             text=t.PASSWORD_LABEL,
             font=ctk.CTkFont(size=12),
             width=80,
-            anchor="w"
+            anchor="w",
         )
         password_label.pack(side="left", padx=(5, 10))
 
@@ -662,11 +651,9 @@ class MainWindow:
             password_frame,
             font=ctk.CTkFont(size=12),
             state="readonly",
-            show="•"  # Ocultar caracteres de contraseña
+            show="•",  # Ocultar caracteres de contraseña
         )
         self.password_entry.pack(side="left", fill="x", expand=True, padx=(0, 5))
-
-
 
         self.toggle_password_btn = ctk.CTkButton(
             password_frame,
@@ -675,7 +662,7 @@ class MainWindow:
             width=80,
             height=30,
             font=ctk.CTkFont(size=12),
-            anchor="center"
+            anchor="center",
         )
         self.toggle_password_btn.pack(side="left", padx=5)
 
@@ -685,7 +672,7 @@ class MainWindow:
             command=self._copy_password,
             width=80,
             height=30,
-            font=ctk.CTkFont(size=12)
+            font=ctk.CTkFont(size=12),
         )
         copy_password_btn.pack(side="left", padx=5)
 
@@ -730,7 +717,7 @@ class MainWindow:
         # Crear marco para botones (centrado)
         button_frame = ctk.CTkFrame(parent)
         button_frame.pack(fill="x", pady=(0, 10))
-        
+
         # Crear marco interno para centrar botones
         inner_frame = ctk.CTkFrame(button_frame, fg_color="transparent")
         inner_frame.pack(expand=True)
@@ -744,7 +731,7 @@ class MainWindow:
             height=40,
             font=ctk.CTkFont(size=14, weight="bold"),
             fg_color="#27ae60",
-            hover_color="#229954"
+            hover_color="#229954",
         )
         self.connect_profile_button.pack(side="left", padx=5)
 
@@ -757,10 +744,10 @@ class MainWindow:
             height=40,
             font=ctk.CTkFont(size=14, weight="bold"),
             fg_color="#e74c3c",
-            hover_color="#c0392b"
+            hover_color="#c0392b",
         )
         self.disconnect_button.pack(side="left", padx=5)
-        
+
         # Botón Abrir Logs
         self.open_logs_button = ctk.CTkButton(
             inner_frame,
@@ -770,7 +757,7 @@ class MainWindow:
             height=40,
             font=ctk.CTkFont(size=14, weight="bold"),
             fg_color="#95a5a6",
-            hover_color="#7f8c8d"
+            hover_color="#7f8c8d",
         )
         self.open_logs_button.pack(side="left", padx=5)
 
@@ -794,7 +781,7 @@ class MainWindow:
             text=t.STATUS_READY,
             font=ctk.CTkFont(size=12),
             text_color="#95a5a6",
-            anchor="w"
+            anchor="w",
         )
         self.status_label.pack(fill="x", padx=5, pady=5)
 
@@ -803,13 +790,13 @@ class MainWindow:
     def _on_connect_profile_clicked(self) -> None:
         """Maneja el clic del botón Conectar para iniciar la conexión basada en perfil."""
         Logger.info(t.MAIN_LOG_PROFILE_CLICKED)
-        
+
         # Verificar si hay un centro seleccionado
         if not self.selected_center:
             Logger.warning(t.MAIN_LOG_PROFILE_NO_CENTER)
             self.update_status(t.STATUS_ERROR_NO_CENTER, "error")
             return
-        
+
         if self.is_connecting:
             Logger.warning(t.MAIN_LOG_CONNECT_IN_PROGRESS)
             self.update_status(t.STATUS_CONNECTING_STARTING, "info")
@@ -818,99 +805,96 @@ class MainWindow:
         # Deshabilitar botón y mostrar estado de carga
         if self.connect_profile_button:
             self.connect_profile_button.configure(
-                state="disabled",
-                text=t.STATUS_CONNECTING
+                state="disabled", text=t.STATUS_CONNECTING
             )
 
         self.update_status(t.STATUS_CONNECTING_PROFILE, "info")
-        
+
         # Ejecutar conexión en hilo en segundo plano
         def profile_connection_worker():
             try:
                 self.is_connecting = True
-                Logger.info(t.MAIN_LOG_PROFILE_STARTING.format(code=self.selected_center.center_code))
-                
+                Logger.info(
+                    t.MAIN_LOG_PROFILE_STARTING.format(
+                        code=self.selected_center.center_code
+                    )
+                )
+
                 # Definir callback de progreso para actualizar GUI en tiempo real
                 def update_progress(message: str):
                     self.window.after(
-                        0,
-                        lambda msg=message: self.update_status(msg, "info")
+                        0, lambda msg=message: self.update_status(msg, "info")
                     )
-                
+
                 # Crear ProfileConnector con credenciales del centro seleccionado
                 profile_connector = ProfileConnector(
                     ssid="gencat_ENS_EDU",
                     username=self.selected_center.username,
-                    password=self.selected_center.password
+                    password=self.selected_center.password,
                 )
-                success, message = profile_connector.connect_via_profile(progress_callback=update_progress)
-                
+                success, message = profile_connector.connect_via_profile(
+                    progress_callback=update_progress
+                )
+
                 # Actualizar UI en el hilo principal
                 if success:
                     self.window.after(
                         0,
                         lambda: self.update_status(
-                            "Connectat correctament via perfil!",
-                            "success"
-                        )
+                            "Connectat correctament via perfil!", "success"
+                        ),
                     )
                 else:
                     self.window.after(
                         0,
                         lambda: self.update_status(
-                            f"Error de connexió: {message}",
-                            "error"
-                        )
+                            f"Error de connexió: {message}", "error"
+                        ),
                     )
-                    
+
             except Exception as e:
                 Logger.error(t.MAIN_LOG_PROFILE_ERROR.format(error=e), exc_info=True)
                 error_msg = f"Error de connexió: {str(e)}"
-                self.window.after(
-                    0,
-                    lambda: self.update_status(error_msg, "error")
-                )
-                
+                self.window.after(0, lambda: self.update_status(error_msg, "error"))
+
             finally:
                 # Restablecer estado de conexión y botón
                 self.is_connecting = False
-                
+
                 def reset_button():
                     if self.connect_profile_button:
                         self.connect_profile_button.configure(
-                            state="normal",
-                            text=t.CONNECT_BUTTON
+                            state="normal", text=t.CONNECT_BUTTON
                         )
-                        
+
                 self.window.after(0, reset_button)
                 Logger.info(t.MAIN_LOG_PROFILE_COMPLETED)
-        
+
         # Iniciar hilo
         connection_thread = threading.Thread(
-            target=profile_connection_worker,
-            daemon=True
+            target=profile_connection_worker, daemon=True
         )
         connection_thread.start()
 
     def _on_open_logs_clicked(self) -> None:
         """Maneja el clic del botón Abrir Logs para abrir la carpeta de logs."""
         Logger.info(t.MAIN_LOG_LOGS_CLICKED)
-        
+
         try:
             import os
             import subprocess
             from wifi_connector.utils.paths import get_logs_folder
-            
+
             logs_folder = get_logs_folder()
-            
+
             # Crear carpeta si no existe
             if not logs_folder.exists():
                 logs_folder.mkdir(parents=True, exist_ok=True)
-            
+
             # Abrir carpeta en el Explorador de Windows
-            subprocess.run(['explorer', str(logs_folder)], shell=True)
+            subprocess.run(["explorer", str(logs_folder)], shell=True)
             Logger.info(t.MAIN_LOG_LOGS_OPENED.format(path=logs_folder))
-            
+
         except Exception as e:
             Logger.error(t.MAIN_LOG_LOGS_ERROR.format(error=e))
             self.update_status(t.STATUS_ERROR_OPEN_LOGS.format(error=e), "error")
@@ -923,17 +907,14 @@ class MainWindow:
         except Exception as e:
             Logger.error(t.MAIN_LOG_ERROR_OPENING_ABOUT.format(error=e))
             self.update_status(t.STATUS_ERROR_OPEN_ABOUT.format(error=e), "error")
-    
+
     def _on_disconnect_clicked(self) -> None:
         """Maneja el clic del botón Desconectar para desconectarse de la red."""
         Logger.info(t.MAIN_LOG_DISCONNECT_CLICKED)
 
         if self.is_connecting:
             Logger.warning(t.MAIN_LOG_DISCONNECT_IN_PROGRESS)
-            self.update_status(
-                t.STATUS_ERROR_DISCONNECT_IN_PROGRESS,
-                "error"
-            )
+            self.update_status(t.STATUS_ERROR_DISCONNECT_IN_PROGRESS, "error")
             return
 
         self.update_status(t.STATUS_DISCONNECTING, "info")
@@ -942,117 +923,32 @@ class MainWindow:
         def disconnect_worker():
             try:
                 network_manager = NetworkManager()
-                
+
                 if network_manager.disconnect():
-                    self.window.after(0, lambda: self.update_status(t.STATUS_DISCONNECTED_SUCCESS, "success"))
+                    self.window.after(
+                        0,
+                        lambda: self.update_status(
+                            t.STATUS_DISCONNECTED_SUCCESS, "success"
+                        ),
+                    )
                 else:
-                    self.window.after(0, lambda: self.update_status(t.STATUS_DISCONNECTED_ERROR, "error"))
+                    self.window.after(
+                        0,
+                        lambda: self.update_status(
+                            t.STATUS_DISCONNECTED_ERROR, "error"
+                        ),
+                    )
             except Exception as e:
                 Logger.error(t.MAIN_LOG_DISCONNECT_ERROR.format(error=e))
-                self.window.after(0, lambda: self.update_status(t.STATUS_ERROR_DISCONNECT.format(error=e), "error"))
-        
+                self.window.after(
+                    0,
+                    lambda: self.update_status(
+                        t.STATUS_ERROR_DISCONNECT.format(error=e), "error"
+                    ),
+                )
+
         disconnect_thread = threading.Thread(target=disconnect_worker, daemon=True)
         disconnect_thread.start()
-
-    def _start_connection_thread(
-        self,
-        credentials: CenterCredentials
-    ) -> None:
-        """Inicia la conexión en un hilo en segundo plano para evitar bloquear la GUI.
-
-        Args:
-            credentials: Objeto CenterCredentials con la información de conexión.
-        """
-        Logger.info(
-            f"Starting connection thread for center: "
-            f"{credentials.center_code}"
-        )
-
-        self.is_connecting = True
-
-        # Definir la función worker de conexión
-        def connection_worker():
-            try:
-                # Actualizar estado - usando after() para garantizar seguridad de hilos
-                self.window.after(
-                    0,
-                    lambda: self.update_status(
-                        "Inicialitzat WiFi de Centres Educatius...",
-                        "info"
-                    )
-                )
-
-                # Crear ProfileConnector con SSID apropiado
-                # Para redes gencat, usaremos un patrón de SSID genérico
-                ssid = "gencat_ENS_EDU"  # SSID predeterminado para redes gencat
-                config = Config.default()
-
-                self.profile_connector = ProfileConnector(ssid, config)
-
-                # Actualizar estado
-                self.window.after(
-                    0,
-                    lambda: self.update_status(
-                        f"Connectant a {ssid}...",
-                        "info"
-                    )
-                )
-
-                # Intentar conexión
-                success = self.profile_connector.connect(
-                    credentials.username,
-                    credentials.password
-                )
-
-                # Actualizar UI según el resultado
-                if success:
-                    self.window.after(
-                        0,
-                        lambda: self.update_status(
-                            f"Connectat correctament a {ssid}!",
-                            "success"
-                        )
-                    )
-                else:
-                    self.window.after(
-                        0,
-                        lambda: self.update_status(
-                            t.STATUS_ERROR_CONNECTION_CHECK_LOGS,
-                            "error"
-                        )
-                    )
-
-            except Exception as e:
-                Logger.error(t.MAIN_LOG_CONNECTION_ERROR.format(error=e), exc_info=True)
-                error_msg = t.STATUS_ERROR_CONNECTION_FAILED.format(error=str(e))
-                self.window.after(
-                    0,
-                    lambda: self.update_status(error_msg, "error")
-                )
-
-            finally:
-                # Restablecer estado de conexión y botón
-                self.is_connecting = False
-
-                def reset_button():
-                    if self.connect_button:
-                        self.connect_button.configure(
-                            state="normal",
-                            text=t.CONNECT_BUTTON
-                        )
-
-                self.window.after(0, reset_button)
-
-                Logger.info(t.MAIN_LOG_CONNECTION_THREAD_COMPLETED)
-
-        # Iniciar el hilo de conexión
-        connection_thread = threading.Thread(
-            target=connection_worker,
-            daemon=True
-        )
-        connection_thread.start()
-
-        Logger.debug(t.MAIN_LOG_CONNECTION_THREAD_STARTED)
 
     def _on_window_close(self) -> None:
         """Maneja el evento de cierre de ventana de forma controlada."""
@@ -1060,10 +956,7 @@ class MainWindow:
 
         if self.is_connecting:
             Logger.warning(t.MAIN_LOG_CONNECTION_IN_PROGRESS)
-            self.update_status(
-                "Espera que la connexió es realitzi...",
-                "info"
-            )
+            self.update_status("Espera que la connexió es realitzi...", "info")
             # En una aplicación de producción, podrías querer cancelar el hilo
             # Por ahora, simplemente dejaremos que se complete
 
