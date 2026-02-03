@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.0.0] - 2026-02-03
+
+### Afegit
+
+- **Vault xifrat de credencials**: nou `vault/vault.bin` amb xifratge AES-GCM + Scrypt i metadades.
+- **Diàleg de desbloqueig**: sol·licita contrasenya del vault en obrir l’app i mostra errors controlats.
+- **Neteja de credencials**: plantilla `xml/credentials_template.xml` per restaurar `xml/credentials.xml` en tancar.
+
+### Canviat
+
+- **Credencials i favorits**: es reemplaça `Json/wifi.json` per vault; favorits guardats a `vault/fav.json` (només codis) amb migració automàtica.
+- **Distribució i dependències**: el build inclou la carpeta `vault/` i la dependència `cryptography`.
+
+### Arreglat
+
+- **Perfil WiFi**: esborra el perfil existent abans d’instal·lar-lo de nou.
+- **Perfil XML gencat_ENS_EDU**: paràmetres modificats per simplificar la connexió.
+
+---
+
 ## [1.2.5] - 2026-01-19
 
 ### Afegit

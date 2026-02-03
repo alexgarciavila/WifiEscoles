@@ -18,8 +18,12 @@ CENTERS_TAB = "Centres"
 CENTER_COUNT = "centres trobats"
 NO_RESULTS = "No s'han trobat resultats"
 NO_FAVORITES = "No tens cap centre favorit. Marca'n alguns amb ⭐"
-NO_FAVORITES_SEARCH = "No hi ha resultats a favorits per '{query}'. Prova a buscar en tots els centres."
-SHOWING_FIRST_CENTERS = "⚠️ Mostrant els primers {max} de {total} centres. Fes servir la cerca per filtrar."
+NO_FAVORITES_SEARCH = (
+    "No hi ha resultats a favorits per '{query}'. Prova a buscar en tots els centres."
+)
+SHOWING_FIRST_CENTERS = (
+    "⚠️ Mostrant els primers {max} de {total} centres. Fes servir la cerca per filtrar."
+)
 SHOWING_CENTERS = "Mostrant {count} centres"
 
 # Panel de centro seleccionado
@@ -47,7 +51,9 @@ STATUS_ERROR = "Error"
 STATUS_SELECT_CENTER = "Selecciona un centre per connectar"
 STATUS_LOADING = "Carregant credencials..."
 STATUS_LOADED = "Carregat {count} centres"
-STATUS_LOADED_SEARCH = "Carregat {count} centres. Utilitza la cerca per trobar el teu centre."
+STATUS_LOADED_SEARCH = (
+    "Carregat {count} centres. Utilitza la cerca per trobar el teu centre."
+)
 
 # Mensajes de conexión
 MSG_CONNECTING_TO = "Connectant a {network}..."
@@ -77,6 +83,8 @@ PROFILE_VERIFYING = "Verificant estat de connexió..."
 
 PROFILE_SUCCESS_INSTALLED = "Perfil WiFi instal·lat correctament"
 PROFILE_SUCCESS_EXISTED = "Perfil WiFi ja existia (actualitzat)"
+PROFILE_SUCCESS_DELETED = "Perfil WiFi existent eliminat correctament"
+PROFILE_INFO_NO_EXISTING_PROFILE = "No existia perfil previ per eliminar"
 PROFILE_SUCCESS_UPDATED = "Credencials actualitzades en XML"
 PROFILE_SUCCESS_EAP = "Credencials EAP configurades correctament"
 PROFILE_SUCCESS_CONNECTED = "Connectat exitosament a '{ssid}'"
@@ -89,34 +97,54 @@ PROFILE_ERROR_NETSH = "Error de xarxa. Revisa els logs per a més detalls."
 PROFILE_ERROR_NETSH_LOG = "Error de netsh: {error}"
 PROFILE_ERROR_INSTALL = "Error en instal·lar perfil. Revisa els logs per a més detalls."
 PROFILE_ERROR_INSTALL_LOG = "Error en instal·lar perfil: {error}"
+PROFILE_ERROR_DELETE_LOG = "Error en eliminar perfil existent: {error}"
+PROFILE_LOG_DELETING_PROFILE = "Eliminant perfil WiFi existent: {ssid}"
 PROFILE_ERROR_CREDS_NOT_FOUND = "Arxiu credentials.xml no trobat: {path}"
 PROFILE_ERROR_PARSING_XML = "Error en parsejar XML: {error}"
 PROFILE_ERROR_UPDATE_CREDS = "Error en actualitzar credentials.xml: {error}"
 PROFILE_ERROR_XML_ELEMENTS = "No s'han trobat elements Username/Password en el XML"
 PROFILE_ERROR_EXE_NOT_FOUND = "Executable WLANSetEAPUserData.exe no trobat: {path}"
-PROFILE_ERROR_EAP = "Error en configurar credencials. Revisa els logs per a més detalls."
+PROFILE_ERROR_EAP = (
+    "Error en configurar credencials. Revisa els logs per a més detalls."
+)
 PROFILE_ERROR_EAP_LOG = "Error de WLANSetEAPUserData: {error}"
-PROFILE_ERROR_CONFIG_EAP = "Error en configurar credencials EAP. Revisa els logs per a més detalls."
+PROFILE_ERROR_CONFIG_EAP = (
+    "Error en configurar credencials EAP. Revisa els logs per a més detalls."
+)
 PROFILE_ERROR_CONFIG_EAP_LOG = "Error en configurar credencials EAP: {error}"
-PROFILE_ERROR_CONNECT = "Error en connectar a la xarxa. Revisa els logs per a més detalls."
+PROFILE_ERROR_CONNECT = (
+    "Error en connectar a la xarxa. Revisa els logs per a més detalls."
+)
 PROFILE_ERROR_CONNECT_LOG = "Error en connectar: {error}"
-PROFILE_ERROR_CONNECT_COMMAND = "Error en executar comanda de connexió. Revisa els logs per a més detalls."
+PROFILE_ERROR_CONNECT_COMMAND = (
+    "Error en executar comanda de connexió. Revisa els logs per a més detalls."
+)
 PROFILE_ERROR_CONNECT_COMMAND_LOG = "Error en executar comanda de connexió: {error}"
 PROFILE_ERROR_VERIFY = "Error en verificar connexió: {error}"
 PROFILE_ERROR_NO_VERIFY = "No s'ha pogut verificar la connexió a '{ssid}' després de {attempts} intents. La xarxa pot estar autenticant o les credencials són incorrectes."
 PROFILE_ERROR_AUTH = "Error d'autenticació: Credencials invàlides o xarxa no disponible"
 PROFILE_ERROR_UNEXPECTED = "Error inesperat durant la connexió: {error}"
 
-PROFILE_WARNING_NO_CREDS = "No s'han proporcionat credencials, utilitzant les del XML existent"
-PROFILE_WARNING_PERMISSIONS_IGNORED = "Avís de permisos de Windows (ignorat, la connexió pot funcionar)"
-PROFILE_WARNING_PERMISSIONS_VERIFY = "No es pot verificar automàticament degut a restriccions de permisos de Windows"
+PROFILE_WARNING_NO_CREDS = (
+    "No s'han proporcionat credencials, utilitzant les del XML existent"
+)
+PROFILE_WARNING_PERMISSIONS_IGNORED = (
+    "Avís de permisos de Windows (ignorat, la connexió pot funcionar)"
+)
+PROFILE_WARNING_PERMISSIONS_VERIFY = (
+    "No es pot verificar automàticament degut a restriccions de permisos de Windows"
+)
 PROFILE_WARNING_PERMISSIONS_MAY_WORK = "La connexió pot haver-se establert correctament"
 
-PROFILE_INFO_CMD_EXECUTED = "Comanda executada, la verificació posterior determinarà el resultat"
+PROFILE_INFO_CMD_EXECUTED = (
+    "Comanda executada, la verificació posterior determinarà el resultat"
+)
 PROFILE_INFO_VERIFICATION_LIMITED = "(verificació limitada per permisos)"
 
 PROFILE_SUCCESS_CMD_PENDING = "Comanda de connexió executada (verificació pendent)"
-PROFILE_ERROR_PERMISSIONS_VERIFY = "No es pot verificar degut a permisos de Windows (la connexió pot estar activa)"
+PROFILE_ERROR_PERMISSIONS_VERIFY = (
+    "No es pot verificar degut a permisos de Windows (la connexió pot estar activa)"
+)
 
 PROFILE_LOG_INIT = "ProfileConnector inicialitzat per SSID: {ssid}, Usuari: {username}"
 PROFILE_LOG_STARTING = "=== Iniciant Mètode de Connexió per Perfil ==="
@@ -139,9 +167,17 @@ PROFILE_LOG_VERIFY_ERROR = "Error de verificació: {message}"
 PROFILE_LOG_VERIFY_FAILED = "No s'ha pogut verificar: {message}"
 PROFILE_LOG_VERIFY_PROBABLY_OK = "La connexió probablement s'ha establert correctament"
 
+# Mensajes de limpieza de credenciales
+PROFILE_CLEAN_TEMPLATE_NOT_FOUND = "Plantilla de credencials no trobada: {path}"
+PROFILE_CLEAN_FILE_NOT_EXISTS = "Arxiu de credencials no existeix: {path}"
+PROFILE_CLEAN_SUCCESS = "Arxiu credentials.xml restaurat a configuració per defecte"
+PROFILE_CLEAN_ERROR = "Error en netejar credentials.xml: {error}"
+PROFILE_CLEAN_ERROR_ON_CLOSE = "Error en netejar credencials al tancar: {error}"
+
 # Mensajes del gestor de credenciales
 CREDS_LOG_INIT = "CredentialsManager inicialitzat amb ruta: {path}"
 CREDS_LOG_LOADING = "Carregant credencials des de {path}"
+CREDS_LOG_LOADING_VAULT = "Carregant credencials des de vault: {path}"
 CREDS_LOG_JSON_LOADED = "Arxiu JSON carregat exitosament"
 CREDS_LOG_LOADED_SUCCESS = "Carregat {count} centres exitosament"
 CREDS_LOG_RETURNING_ALL = "Retornant tots els {count} centres"
@@ -158,9 +194,44 @@ CREDS_WARNING_SKIP_ENTRY = "Ometent entrada de centre invàlida: {error}"
 CREDS_ERROR_FILE_NOT_FOUND = "Arxiu de credencials no trobat: {path}"
 CREDS_ERROR_INVALID_JSON = "JSON invàlid a {path}: {error}"
 CREDS_ERROR_UNEXPECTED = "Error inesperat carregant credencials: {error}"
-CREDS_ERROR_INVALID_STRUCTURE = "Estructura JSON invàlida a {path}: s'esperava un array"
+CREDS_ERROR_INVALID_STRUCTURE = (
+    "Estructura de credencials invàlida a {path}: s'esperava un array"
+)
 CREDS_ERROR_NOT_DICT = "L'entrada de centre ha de ser un diccionari"
 CREDS_ERROR_MISSING_FIELD = "Falta el camp requerit: {field}"
+
+# Mensajes del vault
+VAULT_DIALOG_TITLE = "Accés al vault"
+VAULT_PROMPT_TITLE = "Introdueix la contrasenya del vault"
+VAULT_PROMPT_MESSAGE = "La informació sensible està xifrada en un vault.\nIntrodueix la contrasenya per continuar."
+VAULT_PASSWORD_PLACEHOLDER = "Contrasenya del vault"
+VAULT_UNLOCK_BUTTON = "Desbloquejar"
+VAULT_CANCEL_BUTTON = "Cancel·lar"
+VAULT_ERROR_TITLE = "Error de vault"
+VAULT_ERROR_INVALID_PASSWORD = "Contrasenya incorrecta. Torna-ho a provar."
+VAULT_ERROR_UNREADABLE = "No s'ha pogut llegir el vault: {error}"
+VAULT_ERROR_UNLOCK_ABORTED = "Vault no desbloquejat"
+
+VAULT_STATUS_LOADED = "Vault {version} carregat ({generated_at})"
+VAULT_STATUS_LOADED_VERSION = "Vault {version} carregat"
+VAULT_STATUS_LOADED_GENERIC = "Vault carregat"
+
+VAULT_LOG_INIT = "VaultManager inicialitzat amb ruta: {path}"
+VAULT_LOG_DECRYPTED = "Vault descifrat correctament"
+VAULT_LOG_LOADED = "Vault carregat amb {count} centres"
+VAULT_LOG_PASSWORD_CANCELLED = "Contrasenya del vault cancel·lada per l'usuari"
+VAULT_LOG_INVALID_PASSWORD = "Contrasenya del vault invàlida"
+VAULT_LOG_LOAD_ERROR = "Error carregant el vault: {error}"
+
+VAULT_ERROR_FILE_NOT_FOUND = "Arxiu de vault no trobat: {path}"
+VAULT_ERROR_FILE_READ = "Error en llegir el vault: {path} ({error})"
+VAULT_ERROR_INVALID_FORMAT = "Format de vault invàlid"
+VAULT_ERROR_INVALID_MAGIC = "Magic del vault invàlid"
+VAULT_ERROR_INVALID_JSON = "JSON invàlid dins el vault: {error}"
+VAULT_ERROR_INVALID_STRUCTURE = "Estructura de vault invàlida"
+VAULT_ERROR_METADATA_INVALID = "Metadades del vault invàlides"
+VAULT_ERROR_MISSING_CENTERS = "El vault no conté la llista de centres"
+VAULT_ERROR_DECRYPT_FAILED = "Error en descifrar el vault: {error}"
 
 # Mensajes del gestor de red
 NET_LOG_INIT = "NetworkManager inicialitzat"
@@ -213,7 +284,9 @@ MAIN_LOG_CONNECT_NO_CENTER = "Connectar clicat però no hi ha centre seleccionat
 MAIN_LOG_CONNECT_IN_PROGRESS = "Connexió ja en curs"
 MAIN_LOG_CONNECT_CLICKED = "Botó de connectar clicat per al centre: {code}"
 MAIN_LOG_PROFILE_CLICKED = "Botó de Connectar via Perfil clicat"
-MAIN_LOG_PROFILE_NO_CENTER = "Connectar via Perfil clicat però no hi ha centre seleccionat"
+MAIN_LOG_PROFILE_NO_CENTER = (
+    "Connectar via Perfil clicat però no hi ha centre seleccionat"
+)
 MAIN_LOG_PROFILE_STARTING = "Iniciant connexió basada en perfil per al centre: {code}"
 MAIN_LOG_PROFILE_ERROR = "Error en la connexió via perfil: {error}"
 MAIN_LOG_PROFILE_COMPLETED = "Fil de connexió per perfil completat"
@@ -221,7 +294,9 @@ MAIN_LOG_LOGS_CLICKED = "Botó d'Obrir Logs clicat"
 MAIN_LOG_LOGS_OPENED = "Carpeta de logs oberta: {path}"
 MAIN_LOG_LOGS_ERROR = "Error en obrir la carpeta de logs: {error}"
 MAIN_LOG_DISCONNECT_CLICKED = "Botó de desconnectar clicat"
-MAIN_LOG_DISCONNECT_IN_PROGRESS = "No es pot desconnectar mentre la connexió està en curs"
+MAIN_LOG_DISCONNECT_IN_PROGRESS = (
+    "No es pot desconnectar mentre la connexió està en curs"
+)
 MAIN_LOG_DISCONNECT_ERROR = "Error durant la desconnexió: {error}"
 
 # Mensajes de main.py
@@ -238,13 +313,18 @@ SEARCH_PROMPT = "Escriu a la cerca per trobar el teu centre educatiu"
 SEARCH_PROMPT_HINT = "Utilitza la cerca per filtrar els {count} centres disponibles"
 
 # Mensajes de error de configuración (config.py)
-CONFIG_ERROR_PAUSE_NEGATIVE = "pause_duration ha de ser no negatiu, s'ha obtingut {value}"
-CONFIG_ERROR_WAIT_NEGATIVE = "credential_dialog_wait_time ha de ser no negatiu, s'ha obtingut {value}"
+CONFIG_ERROR_PAUSE_NEGATIVE = (
+    "pause_duration ha de ser no negatiu, s'ha obtingut {value}"
+)
+CONFIG_ERROR_WAIT_NEGATIVE = (
+    "credential_dialog_wait_time ha de ser no negatiu, s'ha obtingut {value}"
+)
 CONFIG_ERROR_FILE_NOT_FOUND = "Arxiu de configuració no trobat: {path}"
 CONFIG_ERROR_UNSUPPORTED_FORMAT = "Format d'arxiu no suportat: {suffix}. Utilitza .json"
 
 # Mensajes de error de favoritos (favorites_manager.py)
 FAV_ERROR_SAVE_FAILED = "Error en desar els favorits: {error}"
+FAV_ERROR_INVALID_ENTRY_FORMAT = "Format de favorit no reconegut"
 
 # Mensajes de log de favoritos (favorites_manager.py)
 FAV_LOG_LOADED = "Carregats {count} favorit(s)"
@@ -252,10 +332,15 @@ FAV_LOG_AUTO_CLEANUP = "Auto-neteja: eliminats {count} favorit(s) obsolet(s)"
 FAV_LOG_ADDED = "Afegit a favorits: {code} - {name}"
 FAV_LOG_REMOVED = "Eliminat de favorits: {code}"
 FAV_LOG_SAVED = "Favorits desats correctament a {path}: {count} centre(s)"
-FAV_LOG_FILE_NOT_EXISTS = "L'arxiu de favorits no existeix: {path}, iniciant amb llista buida"
-FAV_LOG_INVALID_FORMAT = "fav.json té format invàlid (s'esperava array), iniciant amb llista buida"
-FAV_LOG_OBSOLETE_REMOVED = "Favorit obsolet eliminat: {code} - {name}"
+FAV_LOG_FILE_NOT_EXISTS = (
+    "L'arxiu de favorits no existeix: {path}, iniciant amb llista buida"
+)
+FAV_LOG_INVALID_FORMAT = (
+    "fav.json té format invàlid (s'esperava array), iniciant amb llista buida"
+)
+FAV_LOG_OBSOLETE_REMOVED = "Favorit obsolet eliminat: {code}"
 FAV_LOG_INVALID_ENTRY = "Entrada invàlida a fav.json ignorada: {error}"
+FAV_LOG_FORMAT_MIGRATED = "Format de fav.json migrat a llista de codis"
 FAV_LOG_PARSE_ERROR = "Error en parsejar fav.json: {error}, iniciant amb llista buida"
 FAV_LOG_UNEXPECTED_ERROR = "Error inesperat en carregar favorits: {error}"
 FAV_LOG_INVALID_CENTER = "Intent d'afegir centre no vàlid a favorits: {code}"
@@ -277,9 +362,13 @@ VIEW_LOG_FAV_REMOVED = "Eliminat {code} de favorits"
 
 # Mensajes adicionales de main_window.py
 MAIN_LOG_FAV_ICONS_LOADED = "Icones de favorits carregades correctament"
-MAIN_LOG_FAV_ICONS_NOT_FOUND = "Icones de favorits no trobades: {fav_path}, {fav_unchecked_path}"
+MAIN_LOG_FAV_ICONS_NOT_FOUND = (
+    "Icones de favorits no trobades: {fav_path}, {fav_unchecked_path}"
+)
 MAIN_LOG_ERROR_LOADING_ICONS = "Error en carregar icones de favorits: {error}"
-MAIN_LOG_FILTERING_FAVORITES = "Filtrant en mode favorits, llista base té {count} centres"
+MAIN_LOG_FILTERING_FAVORITES = (
+    "Filtrant en mode favorits, llista base té {count} centres"
+)
 MAIN_LOG_FILTERING_ALL = "Filtrant en mode tots, llista base té {count} centres"
 MAIN_LOG_ERROR_TOGGLE_FAV = "Error en canviar favorit per a {code}: {error}"
 MAIN_LOG_ERROR_TOGGLE_VIEW = "Error en canviar mode de vista: {error}"
@@ -316,18 +405,20 @@ STATUS_DISCONNECTING = "Desconnectant..."
 STATUS_DISCONNECTED_SUCCESS = "Desconnectat correctament"
 STATUS_DISCONNECTED_ERROR = "Error en desconnectar"
 STATUS_ERROR_DISCONNECT = "Error en desconnectar: {error}"
-STATUS_ERROR_CONNECTION_CHECK_LOGS = "Error de connexió. Revisa els Logs per més detalls."
+STATUS_ERROR_CONNECTION_CHECK_LOGS = (
+    "Error de connexió. Revisa els Logs per més detalls."
+)
 STATUS_ERROR_CONNECTION_FAILED = "Connection error: {error}"
 # About window
 ABOUT_TITLE = "WiFi de Centres Educatius"
-ABOUT_VERSION = "Versió 1.2.5"
+ABOUT_VERSION = "Versió 2.0.0"
 ABOUT_DEVELOPER = "Desenvolupat per:"
 ABOUT_DEVELOPER_NAME = "Àlex Garcia Vilà"
 ABOUT_LINKEDIN = "Veure Perfil de LinkedIn"
 ABOUT_PORTFOLIO = "Visita el meu portafolis"
+ABOUT_VAULT_INFO = "Vault {version} ({generated_at})"
+ABOUT_VAULT_INFO_VERSION = "Vault {version}"
 
 
 # Mensajes de log para errores de conexión
 MAIN_LOG_CONNECTION_ERROR = "Error en la connexió: {error}"
-
-

@@ -27,13 +27,13 @@ Aquesta aplicació simplifica la connexió a la xarxa WiFi dels centres educatiu
 
 ### Opció 1: Executable (Recomanat)
 
-Descarrega l'executable i l'arxiu de credencials:
+Descarrega l'executable i l'arxiu de vault:
 
 ```
 📁 La meva carpeta/
    ├── WifiEduca.exe
-   └── 📁 Json/
-       └── wifi.json
+   └── 📁 vault/
+       └── vault.bin
 ```
 
 Fes doble clic a `WifiEduca.exe` i ja pots connectar-te!
@@ -58,22 +58,13 @@ python main.py
 
 ## ⚙️ Configuració
 
-### Arxiu de credencials (`Json/wifi.json`)
+### Vault de credencials (`vault/vault.bin`)
 
-Crea un arxiu JSON amb les credencials dels centres:
+L'aplicació utilitza un vault xifrat que es genera externament amb les credencials dels centres.
 
-```json del centres
-[
-  {
-    "Codi": "08012345",
-    "Centre": "Institut Example Barcelona",
-    "Usuari": "W08012345",
-    "Contrasenya": "la_teva_contrasenya"
-  }
-]
-```
+### Favorits (`fav.json`)
 
-> ⚠️ **Important**: Aquest arxiu conté informació sensible. No el comparteixis!
+Els favorits es guarden com una llista de codis de centre i es sincronitzen amb el vault.
 
 ## 📋 Requisits
 

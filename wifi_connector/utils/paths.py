@@ -26,8 +26,8 @@ def get_base_path() -> Path:
 def get_json_path() -> Path:
     """Obtiene la ruta a la carpeta Json.
 
-    Cuando se ejecuta como ejecutable, busca la carpeta Json junto al archivo .exe.
-    Cuando se ejecuta como script, usa una ruta relativa.
+    Nota: esta ruta se mantiene por compatibilidad, pero el uso de Json
+    queda obsoleto en favor del vault cifrado.
 
     Returns:
         Objeto Path apuntando al directorio Json
@@ -35,6 +35,32 @@ def get_json_path() -> Path:
     if getattr(sys, "frozen", False):
         return Path(sys.executable).parent / "Json"
     return get_base_path() / "Json"
+
+
+def get_vault_path() -> Path:
+    """Obtiene la ruta a la carpeta vault.
+
+    Cuando se ejecuta como ejecutable, busca la carpeta vault junto al .exe.
+    Cuando se ejecuta como script, usa una ruta relativa al proyecto.
+
+    Returns:
+        Objeto Path apuntando al directorio vault
+    """
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent / "vault"
+    return get_base_path() / "vault"
+
+
+def get_favorites_path() -> Path:
+    """Obtiene la ruta al archivo de favoritos.
+
+    Guarda el archivo dentro de la carpeta vault/ tanto en modo ejecutable
+    como en modo desarrollo.
+
+    Returns:
+        Objeto Path apuntando al archivo vault/fav.json
+    """
+    return get_vault_path() / "fav.json"
 
 
 def get_logs_folder() -> Path:

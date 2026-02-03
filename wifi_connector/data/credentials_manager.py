@@ -4,11 +4,15 @@ Este módulo proporciona clases para cargar y gestionar credenciales WiFi
 desde archivos JSON, incluyendo funcionalidad de búsqueda y filtrado.
 """
 
-import json
 from dataclasses import dataclass
 from typing import List, Optional
 
-from wifi_connector.core.exceptions import CredentialsFileError, JSONParseError
+from wifi_connector.core.exceptions import (
+    CredentialsFileError,
+    JSONParseError,
+    VaultError,
+)
+from wifi_connector.data.vault_manager import VaultManager
 from wifi_connector.utils.logger import Logger
 from wifi_connector.utils import translations as t
 
@@ -49,90 +53,89 @@ class CenterCredentials:
 
 
 class CredentialsManager:
-    """Gestor para cargar y acceder a credenciales WiFi desde JSON.
+    """Gestor para cargar y acceder a credenciales WiFi desde vault cifrado.
 
-    Proporciona métodos para cargar credenciales desde un archivo JSON y
+    Proporciona métodos para cargar credenciales desde un vault y
     buscar/filtrar centros por código o nombre.
     """
 
-    def __init__(self, json_path: Optional[str] = None):
-        """Inicializa el gestor de credenciales con la ruta del archivo JSON.
+    def __init__(self, vault_path: Optional[str] = None):
+        """Inicializa el gestor de credenciales con la ruta del vault.
 
         Args:
-            json_path: Ruta al archivo JSON que contiene las credenciales.
-                      Si es None, usa la ruta por defecto que funciona tanto
-                      en modo script como ejecutable.
+            vault_path: Ruta al archivo vault.bin que contiene las credenciales.
+                       Si es None, usa la ruta por defecto que funciona tanto
+                       en modo script como ejecutable.
         """
-        if json_path is None:
-            from wifi_connector.utils.paths import get_json_path
+        if vault_path is None:
+            from wifi_connector.utils.paths import get_vault_path
 
-            self.json_path = str(get_json_path() / "Wifi.json")
+            self.vault_path = str(get_vault_path() / "vault.bin")
 
         else:
-            self.json_path = json_path
+            self.vault_path = vault_path
 
         self.centers: List[CenterCredentials] = []
-        Logger.debug(t.CREDS_LOG_INIT.format(path=self.json_path))
+        self.vault_metadata: dict = {}
+        Logger.debug(t.CREDS_LOG_INIT.format(path=self.vault_path))
 
-    def load_credentials(self) -> bool:
-        """Carga las credenciales desde el archivo JSON.
+    def load_credentials(self, password: str) -> bool:
+        """Carga las credenciales desde el vault cifrado.
 
-        Lee y parsea el archivo JSON (formato array con Codi, Centre, Usuari, Contrasenya),
-        y carga todas las credenciales de los centros en memoria.
+        Descifra el vault en memoria usando la contraseña proporcionada y
+        carga todas las credenciales de los centros.
+
+        Args:
+            password: Contraseña del vault
 
         Returns:
             True si las credenciales se cargaron exitosamente, False en caso contrario
 
         Raises:
-            CredentialsFileError: Si el archivo JSON no se puede encontrar o leer
-            JSONParseError: Si el archivo JSON está malformado o es inválido
+            CredentialsFileError: Si el archivo de vault no se puede encontrar o leer
+            JSONParseError: Si el contenido descifrado no es válido
         """
-        Logger.info(t.CREDS_LOG_LOADING.format(path=self.json_path))
+        Logger.info(t.CREDS_LOG_LOADING_VAULT.format(path=self.vault_path))
 
         try:
-            # Read JSON file with UTF-8-sig to handle BOM
-            with open(self.json_path, "r", encoding="utf-8-sig") as f:
-                data = json.load(f)
+            vault_manager = VaultManager(self.vault_path)
+            payload = vault_manager.load_vault(password)
+            self.vault_metadata = payload.metadata
+            return self._load_from_entries(payload.centers)
 
-            Logger.debug(t.CREDS_LOG_JSON_LOADED)
-
-            # Validate that data is a list
-            if not isinstance(data, list):
-                raise JSONParseError(
-                    t.CREDS_ERROR_INVALID_STRUCTURE.format(path=self.json_path)
-                )
-
-            # Parse center entries
-            self.centers = []
-            for entry in data:
-                try:
-                    center = self._parse_center_entry(entry)
-                    self.centers.append(center)
-                except (KeyError, TypeError) as e:
-                    Logger.warning(t.CREDS_WARNING_SKIP_ENTRY.format(error=e))
-                    continue
-
-            Logger.info(t.CREDS_LOG_LOADED_SUCCESS.format(count=len(self.centers)))
-            return True
-
-        except FileNotFoundError:
-            error_msg = t.CREDS_ERROR_FILE_NOT_FOUND.format(path=self.json_path)
-            Logger.error(error_msg)
-            raise CredentialsFileError(error_msg)
-
-        except json.JSONDecodeError as e:
-            error_msg = t.CREDS_ERROR_INVALID_JSON.format(path=self.json_path, error=e)
-            Logger.error(error_msg)
-            raise JSONParseError(error_msg)
-
-        except JSONParseError:
-            # Re-raise JSONParseError without wrapping it
+        except (JSONParseError, VaultError):
             raise
 
         except Exception as e:
             error_msg = t.CREDS_ERROR_UNEXPECTED.format(error=e)
             Logger.error(error_msg, exc_info=True)
             raise CredentialsFileError(error_msg)
+
+    def _load_from_entries(self, data: list) -> bool:
+        """Carga y valida credenciales desde una lista de entradas.
+
+        Args:
+            data: Lista de entradas con campos Codi, Centre, Usuari, Contrasenya
+
+        Returns:
+            True si las credenciales se cargaron exitosamente
+        """
+        if not isinstance(data, list):
+            raise JSONParseError(
+                t.CREDS_ERROR_INVALID_STRUCTURE.format(path=self.vault_path)
+            )
+
+        self.centers = []
+        for entry in data:
+            try:
+                center = self._parse_center_entry(entry)
+                self.centers.append(center)
+            except (KeyError, TypeError) as e:
+                Logger.warning(t.CREDS_WARNING_SKIP_ENTRY.format(error=e))
+                continue
+
+        Logger.info(t.CREDS_LOG_LOADED_SUCCESS.format(count=len(self.centers)))
+        return True
 
     def get_all_centers(self) -> List[CenterCredentials]:
         """Obtiene la lista de todos los centros.

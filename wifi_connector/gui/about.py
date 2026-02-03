@@ -1,18 +1,25 @@
 import customtkinter as ctk
 import webbrowser
-from typing import Optional
+from typing import Optional, Dict, Any
 from wifi_connector.utils import translations as t
+
 
 class AboutWindow(ctk.CTkToplevel):
     """Ventana para mostrar información de la aplicación y créditos."""
 
-    def __init__(self, parent: Optional[ctk.CTk] = None):
+    def __init__(
+        self,
+        parent: Optional[ctk.CTk] = None,
+        vault_metadata: Optional[Dict[str, Any]] = None,
+    ):
         super().__init__(parent)
+
+        self.vault_metadata = vault_metadata or {}
 
         self.title("Sobre WifiEscoles")
         self.geometry("400x420")
         self.resizable(False, False)
-        
+
         self.transient(parent)
         self.grab_set()
         self.focus_set()
@@ -21,14 +28,12 @@ class AboutWindow(ctk.CTkToplevel):
 
     def _setup_ui(self):
         """Inicializa los componentes de la interfaz."""
-        
+
         main_frame = ctk.CTkFrame(self, fg_color="transparent")
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         title_label = ctk.CTkLabel(
-            main_frame,
-            text=t.ABOUT_TITLE,
-            font=ctk.CTkFont(size=20, weight="bold")
+            main_frame, text=t.ABOUT_TITLE, font=ctk.CTkFont(size=20, weight="bold")
         )
         title_label.pack(pady=(10, 5))
 
@@ -36,9 +41,21 @@ class AboutWindow(ctk.CTkToplevel):
             main_frame,
             text=t.ABOUT_VERSION,
             font=ctk.CTkFont(size=12),
-            text_color="gray"
+            text_color="gray",
         )
-        version_label.pack(pady=(0, 20))
+
+        vault_info = self._format_vault_info()
+        if vault_info:
+            version_label.pack(pady=(0, 5))
+            vault_label = ctk.CTkLabel(
+                main_frame,
+                text=vault_info,
+                font=ctk.CTkFont(size=12),
+                text_color="gray",
+            )
+            vault_label.pack(pady=(0, 20))
+        else:
+            version_label.pack(pady=(0, 20))
 
         description_text = (
             "Aquesta aplicació facilita la connexió a les xarxes WiFi\n"
@@ -50,21 +67,17 @@ class AboutWindow(ctk.CTkToplevel):
             main_frame,
             text=description_text,
             font=ctk.CTkFont(size=13),
-            justify="center"
+            justify="center",
         )
         description_label.pack(pady=(0, 30))
 
         dev_label = ctk.CTkLabel(
-            main_frame,
-            text=t.ABOUT_DEVELOPER,
-            font=ctk.CTkFont(size=12, weight="bold")
+            main_frame, text=t.ABOUT_DEVELOPER, font=ctk.CTkFont(size=12, weight="bold")
         )
         dev_label.pack(pady=(0, 5))
 
         name_label = ctk.CTkLabel(
-            main_frame,
-            text=t.ABOUT_DEVELOPER_NAME,
-            font=ctk.CTkFont(size=14)
+            main_frame, text=t.ABOUT_DEVELOPER_NAME, font=ctk.CTkFont(size=14)
         )
         name_label.pack(pady=(0, 10))
 
@@ -75,7 +88,7 @@ class AboutWindow(ctk.CTkToplevel):
             width=200,
             height=35,
             fg_color="#0077b5",
-            hover_color="#005582"
+            hover_color="#005582",
         )
         linkedin_btn.pack(pady=(0, 10))
 
@@ -86,7 +99,7 @@ class AboutWindow(ctk.CTkToplevel):
             width=200,
             height=35,
             fg_color="#2e7d32",
-            hover_color="#1b5e20"
+            hover_color="#1b5e20",
         )
         website_btn.pack(pady=(0, 10))
 
@@ -97,3 +110,16 @@ class AboutWindow(ctk.CTkToplevel):
     def _open_portfolio(self):
         """Abre el sitio web personal en el navegador por defecto."""
         webbrowser.open("https://alexgarciavila.github.io/")
+
+    def _format_vault_info(self) -> str:
+        version = str(
+            self.vault_metadata.get("version")
+            or self.vault_metadata.get("vault_version")
+            or ""
+        )
+        generated = str(self.vault_metadata.get("generated_at") or "")
+        if version and generated:
+            return t.ABOUT_VAULT_INFO.format(version=version, generated_at=generated)
+        if version:
+            return t.ABOUT_VAULT_INFO_VERSION.format(version=version)
+        return ""
