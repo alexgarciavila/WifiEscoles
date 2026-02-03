@@ -46,6 +46,9 @@ specs/
 # Claude AI
 .claude/
 
+# Opencode
+.opencode/
+
 # OS
 .DS_Store
 Thumbs.db
@@ -55,7 +58,7 @@ Logs/
 *.log
 
 # Credentials - IMPORTANT: Never commit credentials!
-Json/*.json
+vault/*
 
 # PyInstaller
 *.spec.bak

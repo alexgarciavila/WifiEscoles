@@ -20,7 +20,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        # Carpeta Json/ excluida completamente
+        # Vault cifrado distribuido junto al ejecutable
+        ('vault', 'vault'),
         ('images', 'images'),
         ('xml', 'xml'),
         ('wlanseteapuserdata', 'wlanseteapuserdata'),
@@ -31,6 +32,9 @@ a = Analysis(
         'PIL._tkinter_finder',
         'xml.etree.ElementTree',
         'darkdetect',
+        'cryptography.hazmat.primitives.ciphers.aead',
+        'cryptography.hazmat.primitives.kdf.pbkdf2',
+        'cryptography.hazmat.primitives.hashes',
     ],
     hookspath=[],
     hooksconfig={},

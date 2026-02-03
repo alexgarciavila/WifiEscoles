@@ -5,6 +5,7 @@ Este módulo usa netsh para gestionar perfiles WiFi y WLANSetEAPUserData para co
 
 import subprocess
 import os
+import shutil
 import xml.etree.ElementTree as ET
 import time
 from dataclasses import dataclass
@@ -297,14 +298,64 @@ class ProfileConnector:
     # Métodos de pasos de conexión
     # ─────────────────────────────────────────────────────────────────────────────
 
+    def _delete_existing_profile(self) -> Tuple[bool, str]:
+        """
+        Elimina el perfil WiFi existente si existe.
+
+        Returns:
+            Tupla (éxito, mensaje) donde éxito es True si se eliminó o no existía
+        """
+        try:
+            Logger.info(t.PROFILE_LOG_DELETING_PROFILE.format(ssid=self.ssid))
+
+            command = [
+                "netsh",
+                "wlan",
+                "delete",
+                "profile",
+                f"name={self.ssid}",
+            ]
+            result = self._run_command(command)
+
+            # Si se eliminó correctamente
+            if result.returncode == 0:
+                Logger.info(t.PROFILE_SUCCESS_DELETED)
+                return True, t.PROFILE_SUCCESS_DELETED
+
+            # Comprobar si el perfil no existía (esto es OK, no es un error)
+            output_lower = result.combined_output
+            if (
+                "no se encontr" in output_lower
+                or "not found" in output_lower
+                or "no existe" in output_lower
+                or "doesn't exist" in output_lower
+            ):
+                Logger.debug(t.PROFILE_INFO_NO_EXISTING_PROFILE)
+                return True, t.PROFILE_INFO_NO_EXISTING_PROFILE
+
+            # Error real al eliminar
+            Logger.warning(t.PROFILE_ERROR_DELETE_LOG.format(error=result.raw_error))
+            # Continuamos igualmente, no es crítico
+            return True, t.PROFILE_INFO_NO_EXISTING_PROFILE
+
+        except Exception as e:
+            Logger.warning(t.PROFILE_ERROR_DELETE_LOG.format(error=str(e)))
+            # No es crítico, continuamos igualmente
+            return True, t.PROFILE_INFO_NO_EXISTING_PROFILE
+
     def _install_wifi_profile(self) -> Tuple[bool, str]:
         """
         Instala el perfil WiFi para todos los usuarios usando netsh.
+
+        Primero elimina el perfil existente si existe, luego instala el nuevo.
 
         Returns:
             Tupla (éxito, mensaje) donde éxito es True si se instaló correctamente
         """
         try:
+            # Primero eliminar el perfil existente
+            self._delete_existing_profile()
+
             if error := self._validate_file_exists(
                 self._profile_path, t.PROFILE_ERROR_PROFILE_NOT_FOUND
             ):
@@ -595,3 +646,43 @@ class ProfileConnector:
             error_msg = t.PROFILE_ERROR_VERIFY.format(error=str(e))
             Logger.error(error_msg, exc_info=True)
             return False, error_msg
+
+    @staticmethod
+    def clean_credentials_file() -> bool:
+        """
+        Restaura el archivo credentials.xml a su configuración por defecto.
+
+        Este método limpia las credenciales del usuario del archivo XML
+        restaurándolo desde el template, para mayor seguridad cuando se cierra
+        la aplicación.
+
+        Returns:
+            True si se limpió exitosamente, False en caso de error
+        """
+        try:
+            script_dir = os.path.dirname(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            )
+            credentials_path = os.path.join(script_dir, "xml", "credentials.xml")
+            template_path = os.path.join(script_dir, "xml", "credentials_template.xml")
+
+            if not os.path.exists(template_path):
+                Logger.warning(
+                    t.PROFILE_CLEAN_TEMPLATE_NOT_FOUND.format(path=template_path)
+                )
+                return False
+
+            if not os.path.exists(credentials_path):
+                Logger.warning(
+                    t.PROFILE_CLEAN_FILE_NOT_EXISTS.format(path=credentials_path)
+                )
+                return True  # No hay nada que limpiar
+
+            # Copiar el template sobre el archivo de credenciales
+            shutil.copy2(template_path, credentials_path)
+            Logger.info(t.PROFILE_CLEAN_SUCCESS)
+            return True
+
+        except Exception as e:
+            Logger.error(t.PROFILE_CLEAN_ERROR.format(error=e), exc_info=True)
+            return False

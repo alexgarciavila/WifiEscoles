@@ -10,6 +10,7 @@ from pathlib import Path
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import os
+import tkinter.messagebox as messagebox
 
 from wifi_connector.data.credentials_manager import (
     CredentialsManager,
@@ -20,9 +21,11 @@ from wifi_connector.core.profile_connector import ProfileConnector
 from wifi_connector.network.manager import NetworkManager
 
 from wifi_connector.utils.logger import Logger
-from wifi_connector.utils.paths import get_base_path, get_json_path
+from wifi_connector.utils.paths import get_base_path, get_favorites_path
 from wifi_connector.utils import translations as t
 from wifi_connector.gui.about import AboutWindow
+from wifi_connector.gui.vault_prompt import VaultPasswordDialog
+from wifi_connector.core.exceptions import VaultDecryptionError, VaultError
 
 
 class MainWindow:
@@ -40,6 +43,7 @@ class MainWindow:
         self.window.title("Wifi de Centres Educatius de Catalunya")
         self.window.geometry("700x600")
         self.window.minsize(700, 600)
+        # Window remains visible from start so vault dialog displays correctly
 
         try:
             ico_path = get_base_path() / "images" / "wifi_icon.ico"
@@ -82,10 +86,14 @@ class MainWindow:
             self.fav_unchecked_icon = None
 
         self.credentials_manager = CredentialsManager()
+        self.vault_metadata = {}
+
+        if not self._unlock_and_load_vault():
+            self.window.destroy()
+            raise RuntimeError(t.VAULT_ERROR_UNLOCK_ABORTED)
 
         # Inicializar FavoritesManager
-        favorites_path = get_json_path() / "fav.json"
-
+        favorites_path = get_favorites_path()
         self.favorites_manager = FavoritesManager(
             favorites_path, self.credentials_manager
         )
@@ -110,7 +118,6 @@ class MainWindow:
         self._setup_ui()
 
         try:
-            self.credentials_manager.load_credentials()
             self.all_centers = self.credentials_manager.get_all_centers()
 
             # Cargar favoritos después de las credenciales
@@ -118,9 +125,10 @@ class MainWindow:
 
             self._populate_centers_table([], show_prompt=True)
             self.update_status(
-                f"Carregat {len(self.all_centers)} centres. Utilitza la cerca per trobar el teu centre.",
+                t.STATUS_LOADED_SEARCH.format(count=len(self.all_centers)),
                 "info",
             )
+            self._update_vault_status()
         except Exception as e:
             Logger.error(t.MAIN_LOG_LOAD_ERROR.format(error=e))
             self.update_status(t.STATUS_ERROR_LOAD_CREDS.format(error=e), "error")
@@ -133,6 +141,60 @@ class MainWindow:
         """Inicia el bucle principal de la GUI."""
         Logger.info(t.MAIN_LOG_STARTING_GUI)
         self.window.mainloop()
+
+    def _unlock_and_load_vault(self) -> bool:
+        """Solicita la contraseña del vault y carga las credenciales."""
+        error_message = ""
+
+        while True:
+            dialog = VaultPasswordDialog(self.window, error_message=error_message)
+            password = dialog.get_password()
+            if password is None:
+                Logger.warning(t.VAULT_LOG_PASSWORD_CANCELLED)
+                return False
+
+            try:
+                self.credentials_manager.load_credentials(password)
+                self.vault_metadata = self.credentials_manager.vault_metadata or {}
+                return True
+            except VaultDecryptionError as e:
+                Logger.warning(t.VAULT_LOG_INVALID_PASSWORD)
+                error_message = t.VAULT_ERROR_INVALID_PASSWORD
+                continue
+            except VaultError as e:
+                Logger.error(t.VAULT_LOG_LOAD_ERROR.format(error=e))
+                messagebox.showerror(
+                    t.VAULT_ERROR_TITLE,
+                    t.VAULT_ERROR_UNREADABLE.format(error=e),
+                )
+                return False
+            except Exception as e:
+                Logger.error(t.VAULT_LOG_LOAD_ERROR.format(error=e))
+                messagebox.showerror(
+                    t.VAULT_ERROR_TITLE,
+                    t.VAULT_ERROR_UNREADABLE.format(error=e),
+                )
+                return False
+
+    def _update_vault_status(self) -> None:
+        """Actualiza el estado con la información del vault cargado."""
+        if not self.vault_metadata:
+            return
+        version = str(
+            self.vault_metadata.get("version")
+            or self.vault_metadata.get("vault_version")
+            or ""
+        )
+        generated = str(self.vault_metadata.get("generated_at") or "")
+        if version and generated:
+            message = t.VAULT_STATUS_LOADED.format(
+                version=version, generated_at=generated
+            )
+        elif version:
+            message = t.VAULT_STATUS_LOADED_VERSION.format(version=version)
+        else:
+            message = t.VAULT_STATUS_LOADED_GENERIC
+        self.update_status(message, "info")
 
     def update_status(self, message: str, status_type: str) -> None:
         """Actualiza la etiqueta de estado con mensaje y código de color.
@@ -903,7 +965,7 @@ class MainWindow:
         """Maneja el clic del botón Acerca de para abrir la ventana About."""
         Logger.info(t.MAIN_LOG_OPENING_ABOUT)
         try:
-            AboutWindow(self.window)
+            AboutWindow(self.window, vault_metadata=self.vault_metadata)
         except Exception as e:
             Logger.error(t.MAIN_LOG_ERROR_OPENING_ABOUT.format(error=e))
             self.update_status(t.STATUS_ERROR_OPEN_ABOUT.format(error=e), "error")
@@ -959,6 +1021,12 @@ class MainWindow:
             self.update_status("Espera que la connexió es realitzi...", "info")
             # En una aplicación de producción, podrías querer cancelar el hilo
             # Por ahora, simplemente dejaremos que se complete
+
+        # Limpiar archivo de credenciales por seguridad
+        try:
+            ProfileConnector.clean_credentials_file()
+        except Exception as e:
+            Logger.error(t.PROFILE_CLEAN_ERROR_ON_CLOSE.format(error=e))
 
         self.window.destroy()
         Logger.info(t.MAIN_LOG_WINDOW_CLOSED)
